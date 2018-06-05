@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 # Build the structures
 activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRANSACC': 9, 'TRANSDCC': 10, 'TRANSIT': 11}
-X_train = []
+
 
 # Read the .mat file
 mat = sio.loadmat('ARS_DLR_DataSet_V2.mat')
@@ -19,13 +19,12 @@ indexes = np.squeeze(data['ARS_Susanna_Test_StSit_Sensor_Left'][3]) - 1 # Remove
 # Change of coordinates to be in global frame
 sample[:,1:] *= attitude[:,1:]
 
-# # Get patterns
-# # for i in range(1,10):
-# # X_train_partition = sample[indexes[0]:indexes[1]+1,1:] # +1 because I need to take all the elements between indexes[0] to indexes[1] included
-# # X_train.append(X_train_partition.T.reshape((indexes[1]+1-indexes[0])*9,1))
-# # print(X_train_partition.T.reshape((indexes[1]+1-indexes[0])*9,1).shape)
-# for i in sample[:,0]:
-#     print(i)
-# # print(sample[:,0])
-# # print(sample_activities)
-# # print(indexes)
+#create X_train and Y_train
+X_train = np.array(sample[:,1:])
+Y_train = np.array([])
+
+j = 0
+for i in range(sample_activities[0].size):
+	number_of_repetitions = indexes[j+1] - indexes[j] + 1
+	Y_train = np.append(Y_train, np.repeat(sample_activities[0][i],number_of_repetitions))
+	j = j+2

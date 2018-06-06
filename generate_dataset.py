@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Build the structures
-activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRANSACC': 9, 'TRANSDCC': 10, 'TRANSIT': 11}
+activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRNSACC': 9, 'TRNSDCC': 10, 'TRANSIT': 11}
 
 
 # Read the .mat file
@@ -21,38 +21,43 @@ for column in data:
 
 #found the input column dimension
 min_length = int(np.amin(array_of_lenghts))
-#print(array_of_lenghts)
-#print(min_length)
-
 
 
 #create X_train and Y_train
-X_train = np.empty((min_length, 9, 0))
-Y_train = np.empty((min_length, 1, 0))
+X_train = []
+Y_train = []
 
 
+# Cycle over all the people in the dataset
 for column in data:
 
 	sample = data[column][0]
 	attitude = data[column][1]
-	sample_activities = data[column][2]
+	sample_activities = data[column][2][0]
 	indexes = np.squeeze(data[column][3]) - 1 # Remove 1 since data are saved in matlab and indexes start from 1 D:
 
 	# Change of coordinates to be in global frame
 	sample[:,1:] *= attitude[:,1:]
-	#print(sample[:min_length,1:].shape)
-	X_train = np.column_stack((X_train, sample[:min_length,1:]))
-	print(X_train.shape)
-	Y_train_single = np.array([])
 
+	# Build a matrix for X_train and a vector for Y_train with the same number of elements to be fed by the CNN
+	# We use list since the append method is faster
+	X_train.append(sample[:min_length,1:])
+
+	Y_train_single = []
 	j = 0
-	for i in range(sample_activities[0].size):
+	for i in range(sample_activities.size):
 		number_of_repetitions = indexes[j+1] - indexes[j] + 1
-		Y_train_single = np.append(Y_train_single, np.repeat(sample_activities[0][i],number_of_repetitions))
+		activity = activities_dict[sample_activities[i][0]]
+		Y_train_single += [activity] * number_of_repetitions
 		j = j+2
-	
-	Y_train_single = Y_train_single[:min_length].reshape((min_length,1))
 
-	Y_train = np.append(Y_train, [Y_train_single], axis = 2)
+	Y_train_single = Y_train_single[:min_length]
+	Y_train.append(Y_train_single)
 
-	print(Y_train.shape)
+# Transform list to numpy array for the sake of the computational flexibility
+X_train = np.array(X_train)
+Y_train = np.array(Y_train)
+Y_train = Y_train.reshape(Y_train.shape[0], Y_train.shape[1], 1)
+
+# print(X_train.shape)
+# print(Y_train.shape)

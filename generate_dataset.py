@@ -1,6 +1,7 @@
 import scipy.io as sio
 import pandas as pd
 import numpy as np
+import h5py
 import matplotlib.pyplot as plt
 
 # Build the structures
@@ -59,5 +60,9 @@ X_train = np.array(X_train)
 Y_train = np.array(Y_train)
 Y_train = Y_train.reshape(Y_train.shape[0], Y_train.shape[1], 1)
 
-# print(X_train.shape)
-# print(Y_train.shape)
+train_dataset = {'X_train': X_train, 'Y_train': Y_train}
+
+ds = h5py.File('train_dataset.h5', 'w')
+ds.create_dataset('X_train', data=X_train)
+ds.create_dataset('Y_train', data=Y_train)
+ds.close()

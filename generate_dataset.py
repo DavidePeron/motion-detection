@@ -4,6 +4,20 @@ import numpy as np
 import h5py
 import matplotlib.pyplot as plt
 
+def get_padding(sample, min_length):
+	# Calculate in how much inputs can be divided this sample
+	n_inputs = int(np.floor(sample.shape[0]/min_length))
+	# Compute padding
+	d_padding = sample.shape[0] - n_inputs * min_length
+	if(d_padding % 2 == 0):
+		right_padding = int(d_padding/2)
+		left_padding = right_padding
+	else:
+		right_padding = int(d_padding/2)
+		left_padding = right_padding + 2
+
+	return left_padding, right_padding, n_inputs
+
 # Build the structures
 activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRNSACC': 9, 'TRNSDCC': 10, 'TRANSIT': 11}
 
@@ -31,6 +45,7 @@ X_train = []
 Y_train = []
 X_test = []
 Y_test = []
+tot_n_inputs = 0
 
 # Cycle over all the people in the dataset
 for column in data:
@@ -43,20 +58,27 @@ for column in data:
 	# Change of coordinates to be in global frame
 	sample[:,1:] *= attitude[:,1:]
 
+	# Compute number of inputs per sample and paddings
+	[left_padding, right_padding, n_inputs] = get_padding(sample, min_length)
+	tot_n_inputs += n_inputs
+	# Cut paddings out of sample
+	sample = sample[left_padding:sample.shape[0], 1:]
+
 	# Build a matrix for X and a vector for Y with the same number of elements to be fed by the CNN
 	# We use list since the append method is faster
-	X.append(sample[:min_length,1:])
+	for i in range(0, n_inputs):
+		X.append(sample[min_length*i:min_length * (i+1), :])
 
-	Y_single = []
-	j = 0
-	for i in range(sample_activities.size):
-		number_of_repetitions = indexes[j+1] - indexes[j] + 1
-		activity = activities_dict[sample_activities[i][0]]
-		Y_single += [activity] * number_of_repetitions
-		j = j+2
+		Y_single = []
+		j = 0
+		for i in range(sample_activities.size):
+			number_of_repetitions = indexes[j+1] - indexes[j] + 1
+			activity = activities_dict[sample_activities[i][0]]
+			Y_single += [activity] * number_of_repetitions
+			j = j+2
 
-	Y_single = Y_single[:min_length]
-	Y.append(Y_single)
+		Y_single = Y_single[:min_length]
+		Y.append(Y_single)
 
 # Transform list to numpy array for the sake of the computational flexibility
 X = np.array(X)
@@ -72,6 +94,8 @@ Y_train = Y[:trainingNorm, :, :]
 X_test = X[trainingNorm:, :, :]
 Y_test = Y[trainingNorm:, :, :]
 
+print(Y_train.shape)
+print(Y_test.shape)
 # Create files dataset
 train_dataset = {'X_train': X_train, 'Y_train': Y_train}
 train_dataset = {'X_test': X_test, 'Y_test': Y_test}

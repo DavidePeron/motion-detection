@@ -24,10 +24,13 @@ for column in data:
 min_length = int(np.amin(array_of_lenghts))
 
 
-#create X_train and Y_train
+X = []
+Y = []
+#create X_train and Y_train, X_test and Y_test
 X_train = []
 Y_train = []
-
+X_test = []
+Y_test = []
 
 # Cycle over all the people in the dataset
 for column in data:
@@ -40,29 +43,45 @@ for column in data:
 	# Change of coordinates to be in global frame
 	sample[:,1:] *= attitude[:,1:]
 
-	# Build a matrix for X_train and a vector for Y_train with the same number of elements to be fed by the CNN
+	# Build a matrix for X and a vector for Y with the same number of elements to be fed by the CNN
 	# We use list since the append method is faster
-	X_train.append(sample[:min_length,1:])
+	X.append(sample[:min_length,1:])
 
-	Y_train_single = []
+	Y_single = []
 	j = 0
 	for i in range(sample_activities.size):
 		number_of_repetitions = indexes[j+1] - indexes[j] + 1
 		activity = activities_dict[sample_activities[i][0]]
-		Y_train_single += [activity] * number_of_repetitions
+		Y_single += [activity] * number_of_repetitions
 		j = j+2
 
-	Y_train_single = Y_train_single[:min_length]
-	Y_train.append(Y_train_single)
+	Y_single = Y_single[:min_length]
+	Y.append(Y_single)
 
 # Transform list to numpy array for the sake of the computational flexibility
-X_train = np.array(X_train)
-Y_train = np.array(Y_train)
-Y_train = Y_train.reshape(Y_train.shape[0], Y_train.shape[1], 1)
+X = np.array(X)
+Y = np.array(Y)
+Y = Y.reshape(Y.shape[0], Y.shape[1], 1)
 
+# Take 80% of the dataset as training set
+trainingNorm = int(np.ceil(X.shape[0]/100*80))
+
+# Divide dataset in training and test set
+X_train = X[:trainingNorm, :, :]
+Y_train = Y[:trainingNorm, :, :]
+X_test = X[trainingNorm:, :, :]
+Y_test = Y[trainingNorm:, :, :]
+
+# Create files dataset
 train_dataset = {'X_train': X_train, 'Y_train': Y_train}
+train_dataset = {'X_test': X_test, 'Y_test': Y_test}
 
 ds = h5py.File('train_dataset.h5', 'w')
 ds.create_dataset('X_train', data=X_train)
 ds.create_dataset('Y_train', data=Y_train)
+ds.close()
+
+ds = h5py.File('test_dataset.h5', 'w')
+ds.create_dataset('X_test', data=X_test)
+ds.create_dataset('Y_test', data=Y_test)
 ds.close()

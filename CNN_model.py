@@ -11,6 +11,7 @@ import pydot
 from IPython.display import SVG
 from keras.utils.vis_utils import model_to_dot
 from keras.utils import plot_model
+from keras.utils.np_utils import to_categorical
 from utility import *
 
 import keras.backend as K
@@ -33,13 +34,13 @@ def ActivityRecognizer(input_shape):
 	#32 is the number of output filters in the convolution
 	#(7,7) is the kernel size, is the 2D convolution window
 	#strides represents how the filter strides along x and y axes
-	X = Conv1D(6, 3, strides = 1, name = 'conv0')(X)
+	X = Conv1D(11, 3, strides = 1, name = 'conv0')(X)
 	X = BatchNormalization(axis = 1, name = 'bn0')(X)
 	X = Activation('relu')(X)
 
 	X = ZeroPadding1D(1)(X)
 
-	X = Conv1D(4, 3, strides = 1, name = 'conv1')(X)
+	X = Conv1D(11, 3, strides = 1, name = 'conv1')(X)
 	X = BatchNormalization(axis = 1, name = 'bn1')(X)
 	X = Activation('relu')(X)
 
@@ -47,7 +48,7 @@ def ActivityRecognizer(input_shape):
 	#ZeroPadding pads the input borders with 0
 	X = ZeroPadding1D(1)(X)
 
-	X = Conv1D(2, 3, strides = 1, name = 'conv2')(X)
+	X = Conv1D(5, 3, strides = 1, name = 'conv2')(X)
 	X = BatchNormalization(axis = 1, name = 'bn2')(X)
 	X = Activation('relu')(X)
 
@@ -59,11 +60,11 @@ def ActivityRecognizer(input_shape):
 	X = Activation('relu')(X)
 
 	#convert into a vector
-	# X = Flatten()(X)
+	X = Flatten()(X)
 
 	# assert len(X.shape) == 2, "Houston we've got a problem"
 	#dense=fully connected layer
-	X = Dense(1, activation = 'sigmoid', name = 'fc')(X)
+	X = Dense(1000, activation = 'sigmoid', name = 'fc')(X)
 
 	#this creates the Keras model instance, this instance is gonna be used to train/test the model
 	model = Model(inputs = X_input, outputs = X, name = 'act_recognizer')
@@ -78,7 +79,7 @@ print('X_test shape = ' + str(X_test.shape))
 print('Y_test shape = ' + str(Y_test.shape))
 
 #channel(=1) added at the end of each tuple
-# X_train, Y_train, X_test, Y_test = resize_input(X_train, Y_train, X_test, Y_test)
+X_train, Y_train, X_test, Y_test = resize_input(X_train, Y_train, X_test, Y_test)
 
 print('X_train shape = ' + str(X_train.shape))
 print('Y_train shape = ' + str(Y_train.shape))
@@ -90,7 +91,7 @@ activity_recognizer = ActivityRecognizer(X_train.shape[1:])
 activity_recognizer.summary()
 
 #COMPILE THE MODEL
-activity_recognizer.compile(optimizer = "sgd", loss = "mean_squared_error", metrics = ["accuracy"])
+activity_recognizer.compile(optimizer = "adam", loss = "kullback_leibler_divergence", metrics = ["accuracy"])
 
 #TRAIN THE MODEL
 activity_recognizer.fit(x = X_train, y = Y_train, shuffle='batch', epochs = 50, batch_size = 32)
@@ -99,3 +100,4 @@ activity_recognizer.fit(x = X_train, y = Y_train, shuffle='batch', epochs = 50, 
 preds = activity_recognizer.evaluate(x = X_test, y = Y_test)
 print ("Loss = " + str(preds[0]))
 print ("Test Accuracy = " + str(preds[1]))
+plot_model(activity_recognizer, to_file='Recognizer.png')

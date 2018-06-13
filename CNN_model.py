@@ -20,29 +20,51 @@ from matplotlib.pyplot import imshow
 
 
 
+print('inizio')
 
+#X = MaxPooling2D((2,1), name = 'max_pool0')(X)
 
 #MODEL FUNCTION CREATED, it requires an input placeholder
 def ActivityRecognizer(input_shape):
+
 	#Input method returns a tensor with a shape of input_vector
 	X_input = Input(input_shape)
 
+
 	#ZeroPadding pads the input borders with 0
-	#(3,3) = (symmetric_height_pad, symmetric_width_pad)
-	X = ZeroPadding2D((3,0))(X_input)
+	#(n,m) = (symmetric_height_pad, symmetric_width_pad)
+	X = ZeroPadding2D((1,0))(X_input)
+
 
 	#those 3 functions compose a single layer
 	#32 is the number of output filters in the convolution
 	#(7,7) is the kernel size, is the 2D convolution window
 	#strides represents how the filter strides along x and y axes
-	X = Conv2D(32, (3,1), strides = (1,1), name = 'conv0')(X)
-	X = MaxPooling2D((2,1), name = 'max_pool0')(X)
-
+	X = Conv2D(1, (3,3), strides = (1,1), name = 'conv0')(X)
 	X = BatchNormalization(axis = 3, name = 'bn0')(X)
-	X = MaxPooling2D((2,1), name = 'max_pool1')(X)
-
 	X = Activation('relu')(X)
-	X = MaxPooling2D((2,1), name = 'max_pool2')(X)
+
+	X = ZeroPadding2D((1,0))(X_input)
+
+	X = Conv2D(1, (3,3), strides = (1,1), name = 'conv0')(X)
+	X = BatchNormalization(axis = 3, name = 'bn0')(X)
+	X = Activation('relu')(X)
+
+
+	#ZeroPadding pads the input borders with 0
+	#(n,m) = (symmetric_height_pad, symmetric_width_pad)
+	X = ZeroPadding2D((1,0))(X_input)
+
+	X = Conv2D(1, (3,3), strides = (1,1), name = 'conv0')(X)
+	X = BatchNormalization(axis = 3, name = 'bn0')(X)
+	X = Activation('relu')(X)
+
+	
+	X = ZeroPadding2D((1,0))(X_input)
+
+	X = Conv2D(1, (3,3), strides = (1,1), name = 'conv0')(X)
+	X = BatchNormalization(axis = 3, name = 'bn0')(X)
+	X = Activation('relu')(X)	
 
 	#convert into a vector
 	X = Flatten()(X)
@@ -56,7 +78,7 @@ def ActivityRecognizer(input_shape):
 
 
 
-
+print('0')
 
 #returns only X_train and Y_train
 X_train, Y_train, X_test, Y_test = load_dataset()
@@ -74,19 +96,24 @@ print('Y_train shape = ' + str(Y_train.shape))
 print('X_test shape = ' + str(X_test.shape))
 print('Y_test shape = ' + str(Y_test.shape))
 
-
+print('1')
 #CREATE THE MODEL
-activity_recognizer = ActivityRecognizer((5684,9,1))
+activity_recognizer = ActivityRecognizer((1000,9,1))
+
+print('2')
 
 activity_recognizer.summary()
+
+print('3')
 
 #COMPILE THE MODEL
 activity_recognizer.compile(optimizer = "sgd", loss = "categorical_crossentropy", metrics = ["accuracy"])
 
 '''
+print('4')
 #TRAIN THE MODEL
 activity_recognizer.fit(x = X_train, y = Y_train, epochs = 50, batch_size = 32)
-
+print('5')
 
 #TEST THE MODEL
 preds = activity_recognizer.evaluate(x = X_test, y = Y_test)

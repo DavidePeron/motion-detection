@@ -4,8 +4,8 @@ import numpy as np
 import h5py
 import matplotlib.pyplot as plt
 
-def get_min_length(data):
-	array_of_lenghts = np.array([]);
+def get_realization_min_length(data):
+	array_of_lenghts = np.array([])
 	for column in data:
 		sample = data[column][0]
 		height = sample[:,1].size
@@ -13,6 +13,18 @@ def get_min_length(data):
 
 	#found the input column dimension
 	min_length = int(np.amin(array_of_lenghts))
+	return min_length
+
+def get_pattern_min_length(data):
+	array_of_lengths = np.array([])
+
+	for column in data:
+		indexes = np.squeeze(data[column][3]) - 1
+		for i in range(0, indexes.shape[0], 2):
+			length = indexes[i+1] - indexes[i]
+			array_of_lengths = np.append(array_of_lengths, length)
+
+	min_length = int(np.amin(array_of_lengths))
 	return min_length
 
 def preprocessing(sample, indexes):
@@ -55,6 +67,7 @@ data = pd.DataFrame({k: pd.Series(v[0]) for k, v in mat.items()})
 # Window size in seconds
 window_size = 10
 # Uncomment this to have fixed window length
+min_pattern_length = get_pattern_min_length(data)
 min_length = int(window_size/0.01)
 
 X = []
@@ -72,45 +85,61 @@ for column in data:
 
 	[sample, indexes] = preprocessing(sample, indexes)
 	# Compute number of inputs per sample and paddings
-	[left_padding, right_padding, n_inputs] = get_padding(sample, min_length)
+	# [left_padding, right_padding, n_inputs] = get_padding(sample, min_length)
+
+
+	# --------------- NEW APPROACH -------------------------------
+
+	for i in range(0, indexes.shape[0], 2):
+		whole_pattern = sample[indexes[i]:indexes[i+1], 1:]
+		label = sample_activities[int(i/2)]
+		shift = 10
+		i = 0
+		while i + min_pattern_length < whole_pattern.shape[0]:
+			X.append(whole_pattern[i:i+min_pattern_length, :])
+			Y.append(label)
+			i += shift
+		# Add the last window
+		X.append(whole_pattern[-min_pattern_length:, :])
+		Y.append(label)
+	# # --------------- NEW APPROACH -------------------------------
+
 
 	# Build a matrix for X and a vector for Y with the same number of elements to be fed by the CNN
 	# We use list since the append method is faster
-	# Exapand Y
-	Y_single = []
-	num_tot = 0
-	for i in range(sample_activities.size):
-		number_of_repetitions = indexes[2*i+1] - indexes[2*i] + 1
-		num_tot += number_of_repetitions
-		activity = activities_dict[sample_activities[i][0]]
-		Y_single += [activity] * number_of_repetitions
+	# Expand Y
 
-	# Cut paddings out of the sample and Y_single
-	sample = sample[left_padding:sample.shape[0] - right_padding, 1:]
-	Y_single = Y_single[left_padding:np.shape(Y_single)[0] - right_padding]
+	# Y_single = []
+	# num_tot = 0
+	# for i in range(sample_activities.size):
+	# 	number_of_repetitions = indexes[2*i+1] - indexes[2*i] + 1
+	# 	num_tot += number_of_repetitions
+	# 	activity = activities_dict[sample_activities[i][0]]
+	# 	Y_single += [activity] * number_of_repetitions
 
-	for k in range(0, n_inputs):
-		X.append(sample[min_length * k:min_length * (k+1), :])
-		Y.append(Y_single[min_length * k: min_length * (k+1)])
+	# # Cut paddings out of the sample and Y_single
+	# sample = sample[left_padding:sample.shape[0] - right_padding, 1:]
+	# Y_single = Y_single[left_padding:np.shape(Y_single)[0] - right_padding]
+
+	# for k in range(0, n_inputs):
+	# 	X.append(sample[min_length * k:min_length * (k+1), :])
+	# 	Y.append(Y_single[min_length * k: min_length * (k+1)])
 
 # Transform list to numpy array for the sake of the computational flexibility
 X = np.array(X)
 Y = np.array(Y)
 print(np.shape(X))
 print(np.shape(Y))
-Y = Y.reshape(Y.shape[0], Y.shape[1], 1)
 
 # Take 80% of the dataset as training set
 trainingNorm = int(np.ceil(X.shape[0]/100*80))
 
 # Divide dataset in training and test set
 X_train = X[:trainingNorm, :, :]
-Y_train = Y[:trainingNorm, :, :]
+Y_train = Y[:trainingNorm, :]
 X_test = X[trainingNorm:, :, :]
-Y_test = Y[trainingNorm:, :, :]
+Y_test = Y[trainingNorm:, :]
 
-# print(Y_train.shape)
-# print(Y_test.shape)
 # Create files dataset
 train_dataset = {'X_train': X_train, 'Y_train': Y_train}
 train_dataset = {'X_test': X_test, 'Y_test': Y_test}

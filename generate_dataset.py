@@ -61,9 +61,6 @@ mat = sio.loadmat('ARS_DLR_DataSet_V2.mat')
 mat = {k:v for k, v in mat.items() if k[0] != '_'}
 data = pd.DataFrame({k: pd.Series(v[0]) for k, v in mat.items()})
 
-# Uncomment this to have maximum window length
-# min_length = get_min_length(data)
-
 # Window size in seconds
 window_size = 10
 # Uncomment this to have fixed window length
@@ -84,15 +81,10 @@ for column in data:
 	sample[:,1:] *= attitude[:,1:]
 
 	[sample, indexes] = preprocessing(sample, indexes)
-	# Compute number of inputs per sample and paddings
-	# [left_padding, right_padding, n_inputs] = get_padding(sample, min_length)
-
-
-	# --------------- NEW APPROACH -------------------------------
 
 	for i in range(0, indexes.shape[0], 2):
 		whole_pattern = sample[indexes[i]:indexes[i+1], 1:]
-		label = sample_activities[int(i/2)]
+		label = activities_dict[sample_activities[int(i/2)][0]]
 		shift = 10
 		i = 0
 		while i + min_pattern_length < whole_pattern.shape[0]:
@@ -102,32 +94,10 @@ for column in data:
 		# Add the last window
 		X.append(whole_pattern[-min_pattern_length:, :])
 		Y.append(label)
-	# # --------------- NEW APPROACH -------------------------------
-
-
-	# Build a matrix for X and a vector for Y with the same number of elements to be fed by the CNN
-	# We use list since the append method is faster
-	# Expand Y
-
-	# Y_single = []
-	# num_tot = 0
-	# for i in range(sample_activities.size):
-	# 	number_of_repetitions = indexes[2*i+1] - indexes[2*i] + 1
-	# 	num_tot += number_of_repetitions
-	# 	activity = activities_dict[sample_activities[i][0]]
-	# 	Y_single += [activity] * number_of_repetitions
-
-	# # Cut paddings out of the sample and Y_single
-	# sample = sample[left_padding:sample.shape[0] - right_padding, 1:]
-	# Y_single = Y_single[left_padding:np.shape(Y_single)[0] - right_padding]
-
-	# for k in range(0, n_inputs):
-	# 	X.append(sample[min_length * k:min_length * (k+1), :])
-	# 	Y.append(Y_single[min_length * k: min_length * (k+1)])
 
 # Transform list to numpy array for the sake of the computational flexibility
 X = np.array(X)
-Y = np.array(Y)
+Y = np.array(Y).reshape(np.shape(Y)[0], 1)
 print(np.shape(X))
 print(np.shape(Y))
 

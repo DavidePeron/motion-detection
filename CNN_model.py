@@ -7,17 +7,10 @@ from keras.preprocessing import image
 from keras.utils import layer_utils
 from keras.utils.data_utils import get_file
 from keras.applications.imagenet_utils import preprocess_input
-import pydot
-from IPython.display import SVG
-from keras.utils.vis_utils import model_to_dot
-from keras.utils import plot_model
-from keras.utils.np_utils import to_categorical
 from utility import *
 
 import keras.backend as K
 K.set_image_data_format('channels_last')
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import imshow
 
 #X = MaxPooling2D((2,1), name = 'max_pool0')(X)
 
@@ -40,21 +33,6 @@ def ActivityRecognizer(input_shape):
 
 	X = ZeroPadding1D(1)(X)
 
-	X = Conv1D(11, 3, strides = 1, name = 'conv1')(X)
-	X = BatchNormalization(axis = 1, name = 'bn1')(X)
-	X = Activation('relu')(X)
-
-
-	#ZeroPadding pads the input borders with 0
-	X = ZeroPadding1D(1)(X)
-
-	X = Conv1D(5, 3, strides = 1, name = 'conv2')(X)
-	X = BatchNormalization(axis = 1, name = 'bn2')(X)
-	X = Activation('relu')(X)
-
-
-	X = ZeroPadding1D(1)(X)
-
 	X = Conv1D(1, 3, strides = 1, name = 'conv3')(X)
 	X = BatchNormalization(axis = 1, name = 'bn3')(X)
 	X = Activation('relu')(X)
@@ -62,7 +40,6 @@ def ActivityRecognizer(input_shape):
 	#convert into a vector
 	X = Flatten()(X)
 
-	# assert len(X.shape) == 2, "Houston we've got a problem"
 	#dense=fully connected layer
 	X = Dense(1000, activation = 'sigmoid', name = 'fc')(X)
 
@@ -94,10 +71,9 @@ activity_recognizer.summary()
 activity_recognizer.compile(optimizer = "adam", loss = "kullback_leibler_divergence", metrics = ["accuracy"])
 
 #TRAIN THE MODEL
-activity_recognizer.fit(x = X_train, y = Y_train, shuffle='batch', epochs = 50, batch_size = 32)
+activity_recognizer.fit(x = X_train, y = Y_train, shuffle='batch', epochs = 40, batch_size = 16)
 
 #TEST THE MODEL
 preds = activity_recognizer.evaluate(x = X_test, y = Y_test)
 print ("Loss = " + str(preds[0]))
 print ("Test Accuracy = " + str(preds[1]))
-plot_model(activity_recognizer, to_file='Recognizer.png')

@@ -2,7 +2,7 @@ import numpy as np
 from keras import layers
 from keras.layers import Input, ZeroPadding2D, Conv2D, ZeroPadding1D, Conv1D, BatchNormalization, Activation, Flatten, Dense
 from keras.layers import AveragePooling2D, MaxPooling2D, Dropout, GlobalMaxPooling2D, GlobalAveragePooling2D
-from keras.models import Model
+from keras.models import Model, load_model
 from keras.preprocessing import image
 from keras.utils import layer_utils
 from keras.utils.data_utils import get_file
@@ -91,10 +91,21 @@ activity_recognizer.compile(optimizer = "adam", loss = "categorical_crossentropy
 
 
 #TRAIN THE MODEL
-activity_recognizer.fit(x = X_train, y = Y_train, shuffle='batch', epochs = 5, batch_size = 128) #verbose = 0,
-'''
+activity_recognizer.fit(x = X_train, y = Y_train, shuffle='batch', epochs = 20, batch_size = 128) #verbose = 0,
+
 #TEST THE MODEL
-preds = activity_recognizer.evaluate(x = X_test, y = Y_test)
-print ("Loss = " + str(preds[0]))
-print ("Test Accuracy = " + str(preds[1]))
+loss, acc = activity_recognizer.evaluate(x = X_test, y = Y_test)
+print ("Loss = " + str(loss))
+print ("Test Accuracy = " + str(acc))
+
+
+
+#SAVE THE MODEL
+#crates an HDF5 file 'activity_recognizer.h5'
+activity_recognizer.save('activity_recognizer.h5')
+
+'''
+#LOAD THE MODEL
+#if I want to use the activity_recognizer.h5 model to test new patterns
+model = load_model('activity_recognizer.h5')
 '''

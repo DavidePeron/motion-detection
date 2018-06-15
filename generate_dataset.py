@@ -67,8 +67,9 @@ window_size = 10
 min_pattern_length = get_pattern_min_length(data)
 min_length = int(window_size/0.01)
 
-X = []
-Y = []
+#list of tuples, each tuple will contain X and Y of pattern i
+tuples = []
+
 
 # Cycle over all the people in the dataset
 for column in data:
@@ -88,18 +89,29 @@ for column in data:
 		shift = 10
 		i = 0
 		while i + min_pattern_length < whole_pattern.shape[0]:
-			X.append(whole_pattern[i:i+min_pattern_length, :])
+			#pippo variable is a 12 length vector with all zeros, exept the lable index that is 1
 			pippo = np.zeros(12)
 			pippo[label] = 1
-			#print(pippo)
-			Y.append(pippo)
+			
+			tuples.append([whole_pattern[i:i+min_pattern_length, :], pippo])
 			i += shift
 		# Add the last window
-		X.append(whole_pattern[-min_pattern_length:, :])
 		pippo = np.zeros(12)
 		pippo[label] = 1
-		#print(pippo)
-		Y.append(pippo)
+		
+		tuples.append([whole_pattern[-min_pattern_length:, :], pippo])
+
+
+tuples = np.array(tuples)
+print()
+#shuffle the list of tuples
+np.random.shuffle(tuples)
+
+
+#separate X and Y into 2 numpy array
+X = [i[0] for i in tuples]
+Y = [i[1] for i in tuples]
+
 
 # Transform list to numpy array for the sake of the computational flexibility
 X = np.array(X)

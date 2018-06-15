@@ -51,7 +51,7 @@ def ActivityRecognizer(input_shape):
 
 	X = Dropout(0.25, name = 'drop1')(X)
 
-	X = Dense(1, activation = 'sigmoid', name = 'fc1')(X)
+	X = Dense(12, activation = 'sigmoid', name = 'fc1')(X)
 
 	#this creates the Keras model instance, this instance is gonna be used to train/test the model
 	model = Model(inputs = X_input, outputs = X, name = 'act_recognizer')
@@ -79,7 +79,7 @@ activity_recognizer.summary()
 
 
 #COMPILE THE MODEL
-activity_recognizer.compile(optimizer = "adam", loss = "kullback_leibler_divergence", metrics = ["accuracy"])
+activity_recognizer.compile(optimizer = "adam", loss = "categorical_crossentropy", metrics = ["accuracy"])
 
 
 #TRAIN THE MODEL

@@ -27,21 +27,31 @@ def ActivityRecognizer(input_shape):
 	#32 is the number of output filters in the convolution
 	#(7,7) is the kernel size, is the 2D convolution window
 	#strides represents how the filter strides along x and y axes
-	X = Conv1D(11, 3, strides = 1, name = 'conv0')(X)
+	X = Conv1D(32, 3, strides = 1, name = 'conv0')(X)
 	X = BatchNormalization(axis = 1, name = 'bn0')(X)
 	X = Activation('relu')(X)
 
-	X = ZeroPadding1D(1)(X)
 
-	X = Conv1D(1, 3, strides = 1, name = 'conv3')(X)
-	X = BatchNormalization(axis = 1, name = 'bn3')(X)
+	X = Conv1D(20, 3, strides = 1, name = 'conv1')(X)
+	X = BatchNormalization(axis = 1, name = 'bn1')(X)
 	X = Activation('relu')(X)
+
+
+	X = Conv1D(12, 3, strides = 1, name = 'conv2')(X)
+	X = BatchNormalization(axis = 1, name = 'bn2')(X)
+	X = Activation('relu')(X)
+
+	X = Dropout(0.25, name = 'drop0')(X)
 
 	#convert into a vector
 	X = Flatten()(X)
 
 	#dense=fully connected layer
-	X = Dense(1000, activation = 'sigmoid', name = 'fc')(X)
+	X = Dense(100, activation = 'sigmoid', name = 'fc0')(X)
+
+	X = Dropout(0.25, name = 'drop1')(X)
+
+	X = Dense(1, activation = 'sigmoid', name = 'fc1')(X)
 
 	#this creates the Keras model instance, this instance is gonna be used to train/test the model
 	model = Model(inputs = X_input, outputs = X, name = 'act_recognizer')
@@ -67,13 +77,16 @@ activity_recognizer = ActivityRecognizer(X_train.shape[1:])
 
 activity_recognizer.summary()
 
+
 #COMPILE THE MODEL
 activity_recognizer.compile(optimizer = "adam", loss = "kullback_leibler_divergence", metrics = ["accuracy"])
 
-#TRAIN THE MODEL
-activity_recognizer.fit(x = X_train, y = Y_train, shuffle='batch', epochs = 40, batch_size = 16)
 
+#TRAIN THE MODEL
+activity_recognizer.fit(x = X_train, y = Y_train, shuffle='batch', epochs = 5, batch_size = 128) #verbose = 0,
+'''
 #TEST THE MODEL
 preds = activity_recognizer.evaluate(x = X_test, y = Y_test)
 print ("Loss = " + str(preds[0]))
 print ("Test Accuracy = " + str(preds[1]))
+'''

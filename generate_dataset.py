@@ -89,15 +89,21 @@ for column in data:
 		i = 0
 		while i + min_pattern_length < whole_pattern.shape[0]:
 			X.append(whole_pattern[i:i+min_pattern_length, :])
-			Y.append(label)
+			pippo = np.zeros(12)
+			pippo[label] = 1
+			#print(pippo)
+			Y.append(pippo)
 			i += shift
 		# Add the last window
 		X.append(whole_pattern[-min_pattern_length:, :])
-		Y.append(label)
+		pippo = np.zeros(12)
+		pippo[label] = 1
+		#print(pippo)
+		Y.append(pippo)
 
 # Transform list to numpy array for the sake of the computational flexibility
 X = np.array(X)
-Y = np.array(Y).reshape(np.shape(Y)[0], 1)
+Y = np.array(Y).reshape(np.shape(Y)[0], 12)
 print(np.shape(X))
 print(np.shape(Y))
 

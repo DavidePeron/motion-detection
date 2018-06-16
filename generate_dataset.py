@@ -52,6 +52,13 @@ def get_padding(sample, min_length):
 
 	return left_padding, right_padding, n_inputs
 
+#Create an array filled with zeros, exept the label-th one
+def convert_to_one_hot(dictionary_length, label):
+	one_hot_array = np.zeros(dictionary_length)
+	one_hot_array[label] = 1
+
+	return one_hot_array
+
 
 # Build the structures
 activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRNSACC': 9, 'TRNSDCC': 10, 'TRANSIT': 11}
@@ -86,20 +93,15 @@ for column in data:
 	for i in range(0, indexes.shape[0], 2):
 		whole_pattern = sample[indexes[i]:indexes[i+1], 1:]
 		label = activities_dict[sample_activities[int(i/2)][0]]
-		shift = 5
+		shift = 10
 		i = 0
 		while i + min_pattern_length < whole_pattern.shape[0]:
-			#pippo variable is a 12 length vector with all zeros, exept the lable index that is 1
-			pippo = np.zeros(12)
-			pippo[label] = 1
-			
-			tuples.append([whole_pattern[i:i+min_pattern_length, :], pippo])
+			one_hot_Y = convert_to_one_hot(len(activities_dict), label)
+			tuples.append([whole_pattern[i:i+min_pattern_length, :], one_hot_Y])
 			i += shift
 		# Add the last window
-		pippo = np.zeros(12)
-		pippo[label] = 1
-		
-		tuples.append([whole_pattern[-min_pattern_length:, :], pippo])
+		one_hot_Y = convert_to_one_hot(len(activities_dict), label)
+		tuples.append([whole_pattern[-min_pattern_length:, :], one_hot_Y])
 
 
 tuples = np.array(tuples)

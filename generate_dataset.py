@@ -86,7 +86,7 @@ for column in data:
 	for i in range(0, indexes.shape[0], 2):
 		whole_pattern = sample[indexes[i]:indexes[i+1], 1:]
 		label = activities_dict[sample_activities[int(i/2)][0]]
-		shift = 10
+		shift = 5
 		i = 0
 		while i + min_pattern_length < whole_pattern.shape[0]:
 			#pippo variable is a 12 length vector with all zeros, exept the lable index that is 1
@@ -103,7 +103,6 @@ for column in data:
 
 
 tuples = np.array(tuples)
-print()
 #shuffle the list of tuples
 np.random.shuffle(tuples)
 

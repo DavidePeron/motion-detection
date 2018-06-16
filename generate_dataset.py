@@ -4,6 +4,24 @@ import numpy as np
 import h5py
 import matplotlib.pyplot as plt
 
+'''
+promemoria per gli indici
+a[start:end]		# items start through end-1
+a[start:]			# items start through the rest of the array
+a[:end]				# items from the beginning through end-1
+a[:]				# a copy of the whole array
+a[start:end:step]	# start through not past end, by step
+a[-1]				# last item in the array
+a[-2:]				# last two items in the array
+a[:-2]				# everything except the last two items
+a[::-1]				# all items in the array, reversed
+a[1::-1]			# the first two items, reversed
+a[:-3:-1]			# the last two items, reversed
+a[-3::-1]			# everything except the last two items, reversed
+'''
+
+
+
 def get_realization_min_length(data):
 	array_of_lenghts = np.array([])
 	for column in data:
@@ -77,7 +95,6 @@ min_length = int(window_size/0.01)
 #list of tuples, each tuple will contain X and Y of pattern i
 tuples = []
 
-
 # Cycle over all the people in the dataset
 for column in data:
 	sample = data[column][0]
@@ -86,12 +103,12 @@ for column in data:
 	indexes = np.squeeze(data[column][3]) - 1 # Remove 1 since data are saved in matlab and indexes start from 1 D:
 
 	# Change of coordinates to be in global frame
-	sample[:,1:] *= attitude[:,1:]
+	sample[:,1:7] *= attitude[:,1:7]
 
 	[sample, indexes] = preprocessing(sample, indexes)
 
 	for i in range(0, indexes.shape[0], 2):
-		whole_pattern = sample[indexes[i]:indexes[i+1], 1:]
+		whole_pattern = sample[indexes[i]:indexes[i+1], 1:7]
 		label = activities_dict[sample_activities[int(i/2)][0]]
 		shift = 10
 		i = 0
@@ -109,7 +126,7 @@ tuples = np.array(tuples)
 np.random.shuffle(tuples)
 
 
-#separate X and Y into 2 numpy array
+#Separate X and Y into 2 numpy array
 X = [i[0] for i in tuples]
 Y = [i[1] for i in tuples]
 

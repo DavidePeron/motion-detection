@@ -66,7 +66,7 @@ def ActivityRecognizer(input_shape):
 
 	X = Dropout(0.5)(X)
 
-	X = Dense(12, activation = 'softmax')(X)
+	X = Dense(11, activation = 'softmax')(X)
 
 	#this creates the Keras model instance, this instance is gonna be used to train/test the model
 	model = Model(inputs = X_input, outputs = X)

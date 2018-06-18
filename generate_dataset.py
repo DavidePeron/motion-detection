@@ -96,8 +96,8 @@ def convert_to_one_hot(dictionary_length, label):
 	return one_hot_array
 
 # In order to add white noise to the previuous dataset
-def add_white_noise(pattern):
-	noise = np.random.normal(0,1, np.shape(window))
+def add_gaussian_noise(pattern):
+	noise = np.random.normal(0, 0.01, np.shape(window))
 	pattern += noise
 	
 	return pattern
@@ -106,17 +106,25 @@ def add_white_noise(pattern):
 	# window_size is the number of elements you get in array noise
 
 # Add noisy pattern to the original list of tuples
-def data_augmentation(tuples, label = None):
+def data_augmentation(tuples, list_of_labels):
 	original_tuples = tuples
-	for i in range(np.shape(original_tuples)[0]):
-		noisy_pattern = add_white_noise(original_tuples[i][0])
-		tuples.append([noisy_pattern, original_tuples[i][1]])
+	k = 0
+	for j in range(len(list_of_labels)):
+		marta = 0
+
+		for i in range(np.shape(original_tuples)[0]):
+
+			if (original_tuples[i][1][list_of_labels[j]] == 1):
+				marta += 1
+				k += 1
+				noisy_pattern = add_gaussian_noise(original_tuples[i][0])
+				tuples.append([noisy_pattern, original_tuples[i][1]])
 	return tuples
 
 
 
 # Build the structures
-activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRNSACC': 9, 'TRNSDCC': 10, 'TRANSIT': 11}
+activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRNSACC': 9, 'TRNSDCC': 10}# 'TRANSIT': 11}
 
 # Read the .mat file
 mat = sio.loadmat('ARS_DLR_DataSet_V2.mat')
@@ -132,7 +140,7 @@ min_length = int(window_size/0.01)
 # List of tuples, each tuple will contain X and Y of pattern i
 tuples = []
 
-
+tracker = np.zeros(len(activities_dict))
 
 # Cycle over all the people in the dataset
 for column in data:
@@ -151,12 +159,15 @@ for column in data:
 	# Remove unlabeled data
 	[sample, indexes] = preprocessing(sample, indexes)
 
+
+
 	for i in range(0, indexes.shape[0], 2):
 		whole_pattern = sample[indexes[i]:indexes[i+1], :]
 		label = activities_dict[sample_activities[int(i/2)][0]]
 		shift = 10
 		i = 0
 		while i + min_pattern_length < whole_pattern.shape[0]:
+			tracker[label] += 1
 			window = whole_pattern[i:i+min_pattern_length, :]
 			one_hot_Y = convert_to_one_hot(len(activities_dict), label)
 			tuples.append([window, one_hot_Y])
@@ -165,9 +176,16 @@ for column in data:
 		# Add the last window
 		one_hot_Y = convert_to_one_hot(len(activities_dict), label)
 		tuples.append([whole_pattern[-min_pattern_length:, :], one_hot_Y])
+		tracker[label] += 1
+
+list_of_labels = []
+for i in range(tracker.size):
+	if (tracker[i] < 900):
+		list_of_labels.append(i)
 
 # Add noisy patterns to tuples list
-tuples = data_augmentation(tuples)
+tuples = data_augmentation(tuples, list_of_labels)
+
 
 # Turn tuples into a numpy array
 tuples = np.array(tuples)
@@ -183,7 +201,7 @@ Y = [i[1] for i in tuples]
 
 # Transform list to numpy array for the sake of the computational flexibility
 X = np.array(X)
-Y = np.array(Y).reshape(np.shape(Y)[0], 12)
+Y = np.array(Y).reshape(np.shape(Y)[0], len(activities_dict))
 print('X shape: ' + str(np.shape(X)))
 print('Y shape: ' + str(np.shape(Y)))
 

@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import h5py
 import matplotlib.pyplot as plt
+import logging
 
 '''
 promemoria per gli indici
@@ -45,16 +46,33 @@ def get_pattern_min_length(data):
 	min_length = int(np.amin(array_of_lengths))
 	return min_length
 
+
+#preprocessing auxiliary function
+def swap_indexes (a, b):
+	tmp = a
+	a = b
+	b = tmp
+	return a,b
+
 def preprocessing(sample, indexes):
 	# Search for missing data
 	for i in range(1, indexes.shape[0] - 1, 2):
+		#the shift between each couple in indexes array is not only 1, 
+		#but sometimes it's also bigger than one (in the 14th column there is also an overlap) 
 		if(indexes[i] != indexes[i+1] - 1):
-			shift = indexes[i+1] - indexes[i] - 1
-			# Cut sample vector
-			sample = np.concatenate((sample[:indexes[i]], sample[indexes[i+1]:]), axis=0)
-			# Shift indexes vector
-			indexes[i+1:] = [x - shift for x in indexes[i+1:]]
+			if (indexes[i+1] > indexes[i]):
+				gap = indexes[i+1] - indexes[i] - 1
+				# Cut sample vector
+				sample = np.concatenate((sample[:indexes[i]], sample[indexes[i+1]:]), axis=0)
+				# Shift indexes vector
+				indexes[i+1:] = [x - gap for x in indexes[i+1:]]
+			else:
+				gap = indexes[i] - indexes[i+1] - 1
+				sample = np.concatenate((sample[:indexes[i+1]], sample[indexes[i]:]), axis = 0)
+				indexes[i], indexes[i+1] = swap_indexes(indexes[i], indexes[i+1])
+				indexes[i+1:] = [x - gap for x in indexes[i+1:]]
 	return sample, indexes
+
 
 def get_padding(sample, min_length):
 	# Calculate in how much inputs can be divided this sample
@@ -70,12 +88,31 @@ def get_padding(sample, min_length):
 
 	return left_padding, right_padding, n_inputs
 
-#Create an array filled with zeros, exept the label-th one
+# Create an array filled with zeros, exept the label-th one-->useful for create Y array
 def convert_to_one_hot(dictionary_length, label):
 	one_hot_array = np.zeros(dictionary_length)
 	one_hot_array[label] = 1
 
 	return one_hot_array
+
+# In order to add white noise to the previuous dataset
+def add_white_noise(pattern):
+	noise = np.random.normal(0,1, np.shape(window))
+	pattern += noise
+	
+	return pattern
+	# 0 is the mean of the normal distribution you are choosing from
+	# 1 is the standard deviation of the normal distribution
+	# window_size is the number of elements you get in array noise
+
+# Add noisy pattern to the original list of tuples
+def data_augmentation(tuples, label = None):
+	original_tuples = tuples
+	for i in range(np.shape(original_tuples)[0]):
+		noisy_pattern = add_white_noise(original_tuples[i][0])
+		tuples.append([noisy_pattern, original_tuples[i][1]])
+	return tuples
+
 
 
 # Build the structures
@@ -92,41 +129,54 @@ window_size = 10
 min_pattern_length = get_pattern_min_length(data)
 min_length = int(window_size/0.01)
 
-#list of tuples, each tuple will contain X and Y of pattern i
+# List of tuples, each tuple will contain X and Y of pattern i
 tuples = []
+
+
 
 # Cycle over all the people in the dataset
 for column in data:
+	# Extrapolate data of a single user
 	sample = data[column][0]
 	attitude = data[column][1]
 	sample_activities = data[column][2][0]
 	indexes = np.squeeze(data[column][3]) - 1 # Remove 1 since data are saved in matlab and indexes start from 1 D:
 
-	# Change of coordinates to be in global frame
-	sample[:,1:7] *= attitude[:,1:7]
+	# Remove time from sample matrix
+	sample = sample[:,1:]
 
+	# Change of coordinates to be in global frame
+	sample *= attitude[:,1:]
+
+	# Remove unlabeled data
 	[sample, indexes] = preprocessing(sample, indexes)
 
 	for i in range(0, indexes.shape[0], 2):
-		whole_pattern = sample[indexes[i]:indexes[i+1], 1:7]
+		whole_pattern = sample[indexes[i]:indexes[i+1], :]
 		label = activities_dict[sample_activities[int(i/2)][0]]
 		shift = 10
 		i = 0
 		while i + min_pattern_length < whole_pattern.shape[0]:
+			window = whole_pattern[i:i+min_pattern_length, :]
 			one_hot_Y = convert_to_one_hot(len(activities_dict), label)
-			tuples.append([whole_pattern[i:i+min_pattern_length, :], one_hot_Y])
+			tuples.append([window, one_hot_Y])
 			i += shift
+
 		# Add the last window
 		one_hot_Y = convert_to_one_hot(len(activities_dict), label)
 		tuples.append([whole_pattern[-min_pattern_length:, :], one_hot_Y])
 
+# Add noisy patterns to tuples list
+tuples = data_augmentation(tuples)
 
+# Turn tuples into a numpy array
 tuples = np.array(tuples)
-#shuffle the list of tuples
+
+# Shuffle the list of tuples
 np.random.shuffle(tuples)
 
 
-#Separate X and Y into 2 numpy array
+# Separate X and Y into 2 numpy array
 X = [i[0] for i in tuples]
 Y = [i[1] for i in tuples]
 
@@ -134,8 +184,8 @@ Y = [i[1] for i in tuples]
 # Transform list to numpy array for the sake of the computational flexibility
 X = np.array(X)
 Y = np.array(Y).reshape(np.shape(Y)[0], 12)
-print(np.shape(X))
-print(np.shape(Y))
+print('X shape: ' + str(np.shape(X)))
+print('Y shape: ' + str(np.shape(Y)))
 
 # Take 80% of the dataset as training set
 trainingNorm = int(np.ceil(X.shape[0]/100*80))

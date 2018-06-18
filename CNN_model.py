@@ -1,7 +1,7 @@
 import numpy as np
 from keras import layers
 from keras.layers import Input, ZeroPadding2D, Conv2D, ZeroPadding1D, Conv1D, BatchNormalization, Activation, Flatten, Dense
-from keras.layers import AveragePooling2D, MaxPooling2D, Dropout, GlobalMaxPooling2D, GlobalAveragePooling2D
+from keras.layers import AveragePooling2D, MaxPooling1D, Dropout, GlobalMaxPooling2D, GlobalAveragePooling2D
 from keras.models import Model, load_model
 from keras.preprocessing import image
 from keras.utils import layer_utils
@@ -20,49 +20,46 @@ def ActivityRecognizer(input_shape):
 	#Input method returns a tensor with a shape of input_vector
 	X_input = Input(input_shape)
 
-	#ZeroPadding pads the input borders with 0
-	#X = ZeroPadding1D(1)(X_input)
+	X = ZeroPadding1D(1)(X_input)
 
-	#those 3 functions compose a single layer
-	#32 is the number of output filters in the convolution
-	#(7,7) is the kernel size, is the 2D convolution window
-	#strides represents how the filter strides along x and y axes
-	X = Conv1D(32, 5, strides = 1, name = 'conv0')(X_input)
-	X = BatchNormalization(axis = 1, name = 'bn0')(X)
+	X = Conv1D(32, 5, strides = 1)(X)
+	#X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
-	X = Conv1D(32, 5, strides = 1, name = 'conv1')(X)
-	X = BatchNormalization(axis = 1, name = 'bn1')(X)
+	X = Conv1D(32, 5, strides = 1)(X)
+	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
-	X = Dropout(0.25, name = 'drop0')(X)
+	X = MaxPooling1D(2, strides = 2)(X)
 
-	X = Conv1D(64, 3, strides = 1, name = 'conv2')(X)
-	X = BatchNormalization(axis = 1, name = 'bn2')(X)
+	X = Dropout(0.25)(X)
+
+	X = Conv1D(64, 3, strides = 1)(X)
+	#X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
-	X = Conv1D(64, 3, strides = 1, name = 'conv3')(X)
-	X = BatchNormalization(axis = 1, name = 'bn3')(X)
+	X = Conv1D(64, 3, strides = 1)(X)
+	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
-	X = Dropout(0.25, name = 'drop1')(X)
+	X = Dropout(0.25)(X)
 
 	#convert into a vector
 	X = Flatten()(X)
 
 	#dense=fully connected layer
-	X = Dense(256, activation = 'relu', name = 'fc0')(X)
+	X = Dense(256, activation = 'relu')(X)
 
-	X = Dropout(0.5, name = 'drop2')(X)
+	X = Dropout(0.5)(X)
 
-	X = Dense(128, activation = 'relu', name = 'fc1')(X)
+	X = Dense(128, activation = 'relu')(X)
 
-	X = Dropout(0.5, name = 'drop3')(X)
+	X = Dropout(0.5)(X)
 
-	X = Dense(12, activation = 'softmax', name = 'fc2')(X)
+	X = Dense(12, activation = 'softmax')(X)
 
 	#this creates the Keras model instance, this instance is gonna be used to train/test the model
-	model = Model(inputs = X_input, outputs = X, name = 'act_recognizer')
+	model = Model(inputs = X_input, outputs = X)
 	return model
 
 #returns only X_train and Y_train

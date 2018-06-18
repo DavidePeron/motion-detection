@@ -20,22 +20,32 @@ def ActivityRecognizer(input_shape):
 	#Input method returns a tensor with a shape of input_vector
 	X_input = Input(input_shape)
 
-	X = ZeroPadding1D(1)(X_input)
+	X = ZeroPadding1D(2)(X_input)
 
-	X = Conv1D(32, 5, strides = 1)(X)
-	#X = BatchNormalization(axis = 1)(X)
+	X = Conv1D(32, 5, strides = 1)(X_input)
+	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
 	X = Conv1D(32, 5, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
-	X = MaxPooling1D(2, strides = 2)(X)
+	#X = MaxPooling1D(2, strides = 2)(X)
 
 	X = Dropout(0.25)(X)
 
 	X = Conv1D(64, 3, strides = 1)(X)
-	#X = BatchNormalization(axis = 1)(X)
+	X = BatchNormalization(axis = 1)(X)
+	X = Activation('relu')(X)
+
+	X = Conv1D(64, 3, strides = 1)(X)
+	X = BatchNormalization(axis = 1)(X)
+	X = Activation('relu')(X)
+
+	X = Dropout(0.25)(X)
+
+	X = Conv1D(64, 3, strides = 1)(X)
+	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
 	X = Conv1D(64, 3, strides = 1)(X)

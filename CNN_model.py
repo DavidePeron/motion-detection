@@ -22,33 +22,23 @@ def ActivityRecognizer(input_shape):
 
 	X = ZeroPadding1D(2)(X_input)
 
-	X = Conv1D(32, 5, strides = 1)(X_input)
+	X = Conv1D(64, 5, strides = 1)(X_input)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
-	X = Conv1D(32, 5, strides = 1)(X)
+	X = Conv1D(64, 5, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
 	#X = MaxPooling1D(2, strides = 2)(X)
 
-	X = Dropout(0.25)(X)
+	#X = Dropout(0.15)(X)
 
-	X = Conv1D(64, 3, strides = 1)(X)
+	X = Conv1D(32, 3, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
-	X = Conv1D(64, 3, strides = 1)(X)
-	X = BatchNormalization(axis = 1)(X)
-	X = Activation('relu')(X)
-
-	X = Dropout(0.25)(X)
-
-	X = Conv1D(64, 3, strides = 1)(X)
-	X = BatchNormalization(axis = 1)(X)
-	X = Activation('relu')(X)
-
-	X = Conv1D(64, 3, strides = 1)(X)
+	X = Conv1D(32, 3, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
@@ -98,7 +88,7 @@ activity_recognizer.compile(optimizer = "adam", loss = "categorical_crossentropy
 
 
 #TRAIN THE MODEL
-activity_recognizer.fit(x = X_train, y = Y_train, shuffle='batch', epochs = 20, batch_size = 128) #verbose = 0,
+activity_recognizer.fit(x = X_train, y = Y_train, shuffle='batch', epochs = 40, batch_size = 128) #verbose = 0,
 
 #TEST THE MODEL
 loss, acc = activity_recognizer.evaluate(x = X_test, y = Y_test)

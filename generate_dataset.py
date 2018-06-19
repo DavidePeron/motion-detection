@@ -57,8 +57,8 @@ def swap_indexes (a, b):
 def preprocessing(sample, indexes):
 	# Search for missing data
 	for i in range(1, indexes.shape[0] - 1, 2):
-		#the shift between each couple in indexes array is not only 1, 
-		#but sometimes it's also bigger than one (in the 14th column there is also an overlap) 
+		#the shift between each couple in indexes array is not only 1,
+		#but sometimes it's also bigger than one (in the 14th column there is also an overlap)
 		if(indexes[i] != indexes[i+1] - 1):
 			if (indexes[i+1] > indexes[i]):
 				gap = indexes[i+1] - indexes[i] - 1
@@ -99,7 +99,7 @@ def convert_to_one_hot(dictionary_length, label):
 def add_gaussian_noise(pattern):
 	noise = np.random.normal(0, 0.01, np.shape(window))
 	pattern += noise
-	
+
 	return pattern
 	# 0 is the mean of the normal distribution you are choosing from
 	# 1 is the standard deviation of the normal distribution
@@ -164,7 +164,7 @@ for column in data:
 	for i in range(0, indexes.shape[0], 2):
 		whole_pattern = sample[indexes[i]:indexes[i+1], :]
 		label = activities_dict[sample_activities[int(i/2)][0]]
-		shift = 10
+		shift = 5
 		i = 0
 		while i + min_pattern_length < whole_pattern.shape[0]:
 			tracker[label] += 1
@@ -184,7 +184,7 @@ for i in range(tracker.size):
 		list_of_labels.append(i)
 
 # Add noisy patterns to tuples list
-tuples = data_augmentation(tuples, list_of_labels)
+#tuples = data_augmentation(tuples, list_of_labels)
 
 
 # Turn tuples into a numpy array

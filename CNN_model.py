@@ -3,6 +3,7 @@ from keras import layers
 from keras.layers import Input, ZeroPadding2D, Conv2D, ZeroPadding1D, Conv1D, BatchNormalization, Activation, Flatten, Dense
 from keras.layers import AveragePooling2D, MaxPooling1D, Dropout, GlobalMaxPooling2D, GlobalAveragePooling2D
 from keras.models import Model, load_model
+from keras import regularizers
 from keras.preprocessing import image
 from keras.utils import layer_utils
 from keras.utils.data_utils import get_file
@@ -42,19 +43,19 @@ def ActivityRecognizer(input_shape):
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
-	X = Dropout(0.25)(X)
+	#X = Dropout(0.25)(X)
 
 	#convert into a vector
 	X = Flatten()(X)
 
 	#dense=fully connected layer
-	X = Dense(256, activation = 'relu')(X)
+	X = Dense(256, activation = 'relu', kernel_regularizer=regularizers.l2(0.1))(X)
 
-	X = Dropout(0.5)(X)
+	#X = Dropout(0.5)(X)
 
-	X = Dense(128, activation = 'relu')(X)
+	X = Dense(128, activation = 'relu', kernel_regularizer=regularizers.l2(0.1))(X)
 
-	X = Dropout(0.5)(X)
+	#X = Dropout(0.5)(X)
 
 	X = Dense(11, activation = 'softmax')(X)
 

@@ -26,18 +26,18 @@ def ActivityRecognizer(input_shape):
 	X = Conv1D(64, 5, strides = 1)(X_input)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
+	X = Dropout(0.1)(X)
 
 	X = Conv1D(64, 5, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
-
+	X = Dropout(0.1)(X)
 	#X = MaxPooling1D(2, strides = 2)(X)
-
-	#X = Dropout(0.15)(X)
 
 	X = Conv1D(32, 3, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
+	X = Dropout(0.1)(X)
 
 	X = Conv1D(32, 3, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)
@@ -52,11 +52,9 @@ def ActivityRecognizer(input_shape):
 	X = Dropout(0.5)(X)
 	X = Dense(256, activation = 'relu')(X)
 
-	#X = Dropout(0.5)(X)
 	X = Dropout(0.5)(X)
 	X = Dense(128, activation = 'relu')(X)
 
-	#X = Dropout(0.5)(X)
 	X = Dropout(0.5)(X)
 	X = Dense(11, activation = 'softmax')(X)
 

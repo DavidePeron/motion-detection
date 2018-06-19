@@ -2,3 +2,5 @@
 ARSDLRDataSet/
 *.pdf
 *.h5
+*.pyc
+load_dataset\.py

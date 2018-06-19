@@ -39,7 +39,6 @@ def ActivityRecognizer(input_shape):
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
-	X = Dropout(0.25)(X)
 	X = Conv1D(32, 3, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
@@ -50,14 +49,15 @@ def ActivityRecognizer(input_shape):
 	X = Flatten()(X)
 
 	#dense=fully connected layer
-	X = Dense(256, activation = 'relu', kernel_regularizer=regularizers.l2(0.1))(X)
+	X = Dropout(0.5)(X)
+	X = Dense(256, activation = 'relu')(X)
 
 	#X = Dropout(0.5)(X)
-
-	X = Dense(128, activation = 'relu', kernel_regularizer=regularizers.l2(0.1))(X)
+	X = Dropout(0.5)(X)
+	X = Dense(128, activation = 'relu')(X)
 
 	#X = Dropout(0.5)(X)
-
+	X = Dropout(0.5)(X)
 	X = Dense(11, activation = 'softmax')(X)
 
 	#this creates the Keras model instance, this instance is gonna be used to train/test the model

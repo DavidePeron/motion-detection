@@ -32,7 +32,7 @@ def ActivityRecognizer(input_shape):
 
 	#X = MaxPooling1D(2, strides = 2)(X)
 
-	X = Dropout(0.25)(X)
+	#X = Dropout(0.15)(X)
 
 	X = Conv1D(32, 3, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)

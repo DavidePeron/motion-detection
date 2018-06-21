@@ -1,4 +1,7 @@
 import numpy as np
+from numpy.random import seed
+# RNG seed
+seed(1)
 from keras import layers
 from keras.layers import Input, ZeroPadding2D, Conv2D, ZeroPadding1D, Conv1D, BatchNormalization, Activation, Flatten, Dense
 from keras.layers import AveragePooling2D, MaxPooling1D, Dropout, GlobalMaxPooling2D, GlobalAveragePooling2D
@@ -9,6 +12,7 @@ from keras.utils import layer_utils
 from keras.utils.data_utils import get_file
 from keras.applications.imagenet_utils import preprocess_input
 from utility import *
+
 
 import keras.backend as K
 K.set_image_data_format('channels_last')
@@ -43,13 +47,13 @@ def ActivityRecognizer(input_shape):
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 
-	#X = Dropout(0.25)(X)
+	X = Dropout(0.25)(X)
 
 	#convert into a vector
 	X = Flatten()(X)
 
 	#dense=fully connected layer
-	X = Dropout(0.5)(X)
+	#X = Dropout(0.5)(X)
 	X = Dense(256, activation = 'relu')(X)
 
 	X = Dropout(0.5)(X)
@@ -88,7 +92,7 @@ activity_recognizer.compile(optimizer = "adam", loss = "categorical_crossentropy
 
 
 #TRAIN THE MODEL
-activity_recognizer.fit(x = X_train, y = Y_train, shuffle='batch', epochs = 20, batch_size = 128) #verbose = 0,
+activity_recognizer.fit(x = X_train, y = Y_train, validation_split=0.2, epochs = 20, batch_size = 128) #verbose = 0,
 
 #TEST THE MODEL
 loss, acc = activity_recognizer.evaluate(x = X_test, y = Y_test)

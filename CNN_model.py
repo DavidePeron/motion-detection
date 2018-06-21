@@ -30,18 +30,18 @@ def ActivityRecognizer(input_shape):
 	X = Conv1D(64, 5, strides = 1)(X_input)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
-	X = Dropout(0.1)(X)
+	X = Dropout(0.15)(X)
 
 	X = Conv1D(64, 5, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
-	X = Dropout(0.1)(X)
+	X = Dropout(0.15)(X)
 	#X = MaxPooling1D(2, strides = 2)(X)
 
 	X = Conv1D(32, 3, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
-	X = Dropout(0.1)(X)
+	X = Dropout(0.15)(X)
 
 	X = Conv1D(32, 3, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)
@@ -82,17 +82,17 @@ print('Y_train shape = ' + str(Y_train.shape))
 print('X_test shape = ' + str(X_test.shape))
 print('Y_test shape = ' + str(Y_test.shape))
 #CREATE THE MODEL
-#activity_recognizer = ActivityRecognizer(X_train.shape[1:])
+activity_recognizer = ActivityRecognizer(X_train.shape[1:])
 
-#activity_recognizer.summary()
+activity_recognizer.summary()
 
 
 #COMPILE THE MODEL
-#activity_recognizer.compile(optimizer = "adam", loss = "categorical_crossentropy", metrics = ["accuracy"])
+activity_recognizer.compile(optimizer = "adam", loss = "categorical_crossentropy", metrics = ["accuracy"])
 
-activity_recognizer = load_model('epoch65.h5')
+#activity_recognizer = load_model('trial7.h5')
 #TRAIN THE MODEL
-#activity_recognizer.fit(x = X_train, y = Y_train, validation_split=0.2, epochs = 4, batch_size = 128) #verbose = 0,
+activity_recognizer.fit(x = X_train, y = Y_train, validation_split=0.2, epochs = 60, batch_size = 128) #verbose = 0,
 
 #TEST THE MODEL
 loss, acc = activity_recognizer.evaluate(x = X_test, y = Y_test)

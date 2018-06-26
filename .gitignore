@@ -3,4 +3,9 @@ ARSDLRDataSet/
 *.pdf
 *.h5
 *.pyc
+*.blg
+*.bbl
+*.aux
+*.log
+*.synctex.gz
 load_dataset\.py

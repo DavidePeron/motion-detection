@@ -160,9 +160,16 @@ for column in data:
 	[sample, indexes] = preprocessing(sample, indexes)
 
 
+	# Transform samples to extract modules
+	modules = np.zeros((sample.shape[0], 3))
+	for i in range(0, sample.shape[0]):
+		acc_module = np.sqrt(np.sum(np.square(sample[i,0:3])))
+		w_module = np.sqrt(np.sum(np.square(sample[i,3:6])))
+		mag_module = np.sqrt(np.sum(np.square(sample[i,6:9])))
+		modules[i] = np.array([acc_module, w_module, mag_module])
 
 	for i in range(0, indexes.shape[0], 2):
-		whole_pattern = sample[indexes[i]:indexes[i+1], :]
+		whole_pattern = modules[indexes[i]:indexes[i+1], :]
 		label = activities_dict[sample_activities[int(i/2)][0]]
 		shift = 5
 		i = 0

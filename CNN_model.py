@@ -1,7 +1,6 @@
 import numpy as np
 from numpy.random import seed
-# RNG seed
-seed(1)
+
 from keras import layers
 from keras.layers import Input, ZeroPadding2D, Conv2D, ZeroPadding1D, Conv1D, BatchNormalization, Activation, Flatten, Dense
 from keras.layers import AveragePooling2D, MaxPooling1D, Dropout, GlobalMaxPooling2D, GlobalAveragePooling2D
@@ -92,7 +91,7 @@ activity_recognizer.compile(optimizer = "adam", loss = "categorical_crossentropy
 
 #activity_recognizer = load_model('trial7.h5')
 #TRAIN THE MODEL
-activity_recognizer.fit(x = X_train, y = Y_train, validation_split=0.2, epochs = 60, batch_size = 128) #verbose = 0,
+activity_recognizer.fit(x = X_train, y = Y_train, validation_split=0.2, epochs = 3, batch_size = 128) #verbose = 0,
 
 #TEST THE MODEL
 loss, acc = activity_recognizer.evaluate(x = X_test, y = Y_test)

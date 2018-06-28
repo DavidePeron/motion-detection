@@ -155,19 +155,55 @@ sample_activities = data["ARS_Paula_Benchmark_Sensor_Left"][2][0]
 indexes = np.squeeze(data["ARS_Paula_Benchmark_Sensor_Left"][3]) - 1 # Remove 1 since data are saved in matlab and indexes start from 1 D:
 
 window_size = 27
-right_limit = 0
+left_limit = 0
+shift = 5
 # Remove time from sample matrix
 sample = sample[:,1:]
+# Change of coordinates to be in global frame
+sample *= attitude[:,1:]
 
-activity_recognizer = load_model('trial8.h5')
+# Transform samples to extract modules
+# modules = np.zeros((sample.shape[0], 3))
+# for i in range(0, sample.shape[0]):
+# 	acc_module = np.sqrt(np.sum(np.square(sample[i,0:3])))
+# 	w_module = np.sqrt(np.sum(np.square(sample[i,3:6])))
+# 	mag_module = np.sqrt(np.sum(np.square(sample[i,6:9])))
+# 	modules[i] = np.array([acc_module, w_module, mag_module])
+counter = 0
+
+pointer = 0
+right_predictions = 0
+total_predictions = 0
+activity_recognizer = load_model('activity_recognizer.h5')
 # Shift the window over all the sample until the right limit of the window is less than the sample size
-while(right_limit+window_size < sample.shape[0]):
-	current_window = sample[right_limit:right_limit+window_size, :]
-	right_limit = right_limit+window_size
-	print(right_limit)
+while(left_limit + window_size <= sample.shape[0]):
+	counter += 1
+	current_window = sample[left_limit:left_limit + window_size, :]
+	current_window = current_window.reshape(1, current_window.shape[0], current_window.shape[1])
+	prediction = activity_recognizer.predict(current_window)
+	predicted_label = np.argmax(prediction)
+	# Check whenever the label of true output is changed
+	# Takes in account only windows completely contained in a pattern
+	if(left_limit + window_size <= indexes[pointer*2+1]):
+		total_predictions += 1
+		true_label = activities_dict[sample_activities[pointer][0]]
+		if(predicted_label == true_label):
+			right_predictions += 1
+	elif(pointer + 1 < sample_activities.shape[0]):
+		if(left_limit >= indexes[(pointer+1) * 2]):
+			# If left_limit is greater of the left limit of the pattern in the indexes, then increase pointer
+			pointer += 1
+			total_predictions += 1
+			true_label = activities_dict[sample_activities[pointer][0]]
+			print(sample_activities[pointer][0] + " ----------- " + str(true_label))
+			print("Predicted label: " + str(predicted_label))
+			if(predicted_label == true_label):
+				right_predictions += 1
+	left_limit += shift
 
-# 	# Change of coordinates to be in global frame
-# 	sample *= attitude[:,1:]
+print("Number of windows: " + str(counter))
+print("Total predictions: " + str(total_predictions))
+#print(right_predictions/total_predictions)
 
 # 	# Remove unlabeled data
 # 	[sample, indexes] = preprocessing(sample, indexes)

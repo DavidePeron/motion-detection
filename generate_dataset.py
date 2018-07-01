@@ -144,6 +144,7 @@ tracker = np.zeros(len(activities_dict))
 
 # Cycle over all the people in the dataset
 for column in data:
+	print(column)
 	# Extrapolate data of a single user
 	sample = data[column][0]
 	attitude = data[column][1]

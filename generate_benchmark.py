@@ -38,103 +38,103 @@ a[-3::-1]			# everything except the last two items, reversed
 
 
 
-def get_realization_min_length(data):
-	array_of_lenghts = np.array([])
-	for column in data:
-		sample = data[column][0]
-		height = sample[:,1].size
-		array_of_lenghts = np.append(array_of_lenghts, height) #column vector
+# def get_realization_min_length(data):
+# 	array_of_lenghts = np.array([])
+# 	for column in data:
+# 		sample = data[column][0]
+# 		height = sample[:,1].size
+# 		array_of_lenghts = np.append(array_of_lenghts, height) #column vector
 
-	#found the input column dimension
-	min_length = int(np.amin(array_of_lenghts))
-	return min_length
+# 	#found the input column dimension
+# 	min_length = int(np.amin(array_of_lenghts))
+# 	return min_length
 
-def get_pattern_min_length(data):
-	array_of_lengths = np.array([])
+# def get_pattern_min_length(data):
+# 	array_of_lengths = np.array([])
 
-	for column in data:
-		indexes = np.squeeze(data[column][3]) - 1
-		for i in range(0, indexes.shape[0], 2):
-			length = indexes[i+1] - indexes[i]
-			array_of_lengths = np.append(array_of_lengths, length)
+# 	for column in data:
+# 		indexes = np.squeeze(data[column][3]) - 1
+# 		for i in range(0, indexes.shape[0], 2):
+# 			length = indexes[i+1] - indexes[i]
+# 			array_of_lengths = np.append(array_of_lengths, length)
 
-	min_length = int(np.amin(array_of_lengths))
-	return min_length
+# 	min_length = int(np.amin(array_of_lengths))
+# 	return min_length
 
 
 #preprocessing auxiliary function
-def swap_indexes (a, b):
-	tmp = a
-	a = b
-	b = tmp
-	return a,b
+# def swap_indexes (a, b):
+# 	tmp = a
+# 	a = b
+# 	b = tmp
+# 	return a,b
 
-def preprocessing(sample, indexes):
-	# Search for missing data
-	for i in range(1, indexes.shape[0] - 1, 2):
-		#the shift between each couple in indexes array is not only 1,
-		#but sometimes it's also bigger than one (in the 14th column there is also an overlap)
-		if(indexes[i] != indexes[i+1] - 1):
-			if (indexes[i+1] > indexes[i]):
-				gap = indexes[i+1] - indexes[i] - 1
-				# Cut sample vector
-				sample = np.concatenate((sample[:indexes[i]], sample[indexes[i+1]:]), axis=0)
-				# Shift indexes vector
-				indexes[i+1:] = [x - gap for x in indexes[i+1:]]
-			else:
-				gap = indexes[i] - indexes[i+1] - 1
-				sample = np.concatenate((sample[:indexes[i+1]], sample[indexes[i]:]), axis = 0)
-				indexes[i], indexes[i+1] = swap_indexes(indexes[i], indexes[i+1])
-				indexes[i+1:] = [x - gap for x in indexes[i+1:]]
-	return sample, indexes
+# def preprocessing(sample, indexes):
+# 	# Search for missing data
+# 	for i in range(1, indexes.shape[0] - 1, 2):
+# 		#the shift between each couple in indexes array is not only 1,
+# 		#but sometimes it's also bigger than one (in the 14th column there is also an overlap)
+# 		if(indexes[i] != indexes[i+1] - 1):
+# 			if (indexes[i+1] > indexes[i]):
+# 				gap = indexes[i+1] - indexes[i] - 1
+# 				# Cut sample vector
+# 				sample = np.concatenate((sample[:indexes[i]], sample[indexes[i+1]:]), axis=0)
+# 				# Shift indexes vector
+# 				indexes[i+1:] = [x - gap for x in indexes[i+1:]]
+# 			else:
+# 				gap = indexes[i] - indexes[i+1] - 1
+# 				sample = np.concatenate((sample[:indexes[i+1]], sample[indexes[i]:]), axis = 0)
+# 				indexes[i], indexes[i+1] = swap_indexes(indexes[i], indexes[i+1])
+# 				indexes[i+1:] = [x - gap for x in indexes[i+1:]]
+# 	return sample, indexes
 
 
-def get_padding(sample, min_length):
-	# Calculate in how much inputs can be divided this sample
-	n_inputs = int(np.floor(sample.shape[0]/min_length))
-	# Compute padding
-	d_padding = sample.shape[0] - n_inputs * min_length
-	if(d_padding % 2 == 0):
-		right_padding = int(d_padding/2)
-		left_padding = right_padding
-	else:
-		right_padding = int(d_padding/2)
-		left_padding = right_padding + 1
+# def get_padding(sample, min_length):
+# 	# Calculate in how much inputs can be divided this sample
+# 	n_inputs = int(np.floor(sample.shape[0]/min_length))
+# 	# Compute padding
+# 	d_padding = sample.shape[0] - n_inputs * min_length
+# 	if(d_padding % 2 == 0):
+# 		right_padding = int(d_padding/2)
+# 		left_padding = right_padding
+# 	else:
+# 		right_padding = int(d_padding/2)
+# 		left_padding = right_padding + 1
 
-	return left_padding, right_padding, n_inputs
+# 	return left_padding, right_padding, n_inputs
 
-# Create an array filled with zeros, exept the label-th one-->useful for create Y array
-def convert_to_one_hot(dictionary_length, label):
-	one_hot_array = np.zeros(dictionary_length)
-	one_hot_array[label] = 1
+# # Create an array filled with zeros, exept the label-th one-->useful for create Y array
+# def convert_to_one_hot(dictionary_length, label):
+# 	one_hot_array = np.zeros(dictionary_length)
+# 	one_hot_array[label] = 1
 
-	return one_hot_array
+# 	return one_hot_array
 
-# In order to add white noise to the previuous dataset
-def add_gaussian_noise(pattern):
-	noise = np.random.normal(0, 0.01, np.shape(window))
-	pattern += noise
+# # In order to add white noise to the previuous dataset
+# def add_gaussian_noise(pattern):
+# 	noise = np.random.normal(0, 0.01, np.shape(window))
+# 	pattern += noise
 
-	return pattern
-	# 0 is the mean of the normal distribution you are choosing from
-	# 1 is the standard deviation of the normal distribution
-	# window_size is the number of elements you get in array noise
+# 	return pattern
+# 	# 0 is the mean of the normal distribution you are choosing from
+# 	# 1 is the standard deviation of the normal distribution
+# 	# window_size is the number of elements you get in array noise
 
 # Add noisy pattern to the original list of tuples
-def data_augmentation(tuples, list_of_labels):
-	original_tuples = tuples
-	k = 0
-	for j in range(len(list_of_labels)):
-		marta = 0
+# def data_augmentation(tuples, list_of_labels):
+# 	original_tuples = tuples
+# 	k = 0
+# 	for j in range(len(list_of_labels)):
+# 		marta = 0
 
-		for i in range(np.shape(original_tuples)[0]):
+# 		for i in range(np.shape(original_tuples)[0]):
 
-			if (original_tuples[i][1][list_of_labels[j]] == 1):
-				marta += 1
-				k += 1
-				noisy_pattern = add_gaussian_noise(original_tuples[i][0])
-				tuples.append([noisy_pattern, original_tuples[i][1]])
-	return tuples
+# 			if (original_tuples[i][1][list_of_labels[j]] == 1):
+# 				marta += 1
+# 				k += 1
+# 				noisy_pattern = add_gaussian_noise(original_tuples[i][0])
+# 				tuples.append([noisy_pattern, original_tuples[i][1]])
+# 	return tuples
 
 
 

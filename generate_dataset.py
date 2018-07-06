@@ -222,9 +222,9 @@ for column in data:
 		tuples.append(transit_pattern[1])
 		tuples.append(transit_pattern[2])
 		tuples.append(transit_pattern[3])
+		#tracker[11] += 4
 
-
-# A CHE SERVIVA QUESTO? D:
+# Counting how many times a label appears
 list_of_labels = []
 for i in range(tracker.size):
 	if (tracker[i] < 900):

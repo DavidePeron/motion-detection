@@ -105,8 +105,12 @@ for column in data:
 
 		left_limit += shift
 
-print(len(true_labels))
-print(len(predicted_labels))
+labels = pd.DataFrame(
+    {'true': true_labels,
+     'predicted': predicted_labels
+    })
+
+labels.to_csv("labels_benchmark.csv", index=None, header=None, sep='\t')
 print("Number of windows: " + str(counter))
 print("Total predictions: " + str(total_predictions))
 print("Prediction accuracy: " + str(right_predictions/total_predictions))

@@ -42,6 +42,8 @@ data = pd.DataFrame({k: pd.Series(v[0]) for k, v in mat.items()})
 # How many shifts in the sample
 counter = 0
 
+true_labels = []
+predicted_labels = []
 
 right_predictions = 0
 total_predictions = 0
@@ -83,6 +85,8 @@ for column in data:
 		if(left_limit + window_size <= indexes[pointer*2+1]):
 			total_predictions += 1
 			true_label = activities_dict[sample_activities[pointer][0]]
+			predicted_labels.append(predicted_label)
+			true_labels.append(true_label)
 			if(predicted_label == true_label):
 				right_predictions += 1
 
@@ -92,6 +96,8 @@ for column in data:
 				pointer += 1
 				total_predictions += 1
 				true_label = activities_dict[sample_activities[pointer][0]]
+				predicted_labels.append(predicted_label)
+				true_labels.append(true_label)
 				print(sample_activities[pointer][0] + " ----------- " + str(true_label))
 				print("Predicted label: " + str(predicted_label))
 				if(predicted_label == true_label):
@@ -109,6 +115,8 @@ for column in data:
 
 		left_limit += shift
 
+print(len(true_labels))
+print(len(predicted_labels))
 print("Number of windows: " + str(counter))
 print("Total predictions: " + str(total_predictions))
 print("Prediction accuracy: " + str(right_predictions/total_predictions))

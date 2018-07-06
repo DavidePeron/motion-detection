@@ -174,6 +174,8 @@ counter = 0
 pointer = 0
 right_predictions = 0
 total_predictions = 0
+total_transit = 0
+right_transit = 0
 activity_recognizer = load_model('activity_recognizer.h5')
 # Shift the window over all the sample until the right limit of the window is less than the sample size
 while(left_limit + window_size <= sample.shape[0]):
@@ -199,14 +201,18 @@ while(left_limit + window_size <= sample.shape[0]):
 	else:
 		# Transitions, not recognized
 		true_label = 11
-
+		total_predictions += 1
+		total_transit += 1
 	if(predicted_label == true_label):
 		right_predictions += 1
+		right_transit += 1
 
 	left_limit += shift
 
 print("Number of windows: " + str(counter))
 print("Total predictions: " + str(total_predictions))
+print("Total transitions: " + str(total_transit))
+print("Right transitions: " + str(right_transit))
 print("Prediction accuracy: " + str(right_predictions/total_predictions))
 
 # 	# Remove unlabeled data

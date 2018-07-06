@@ -21,6 +21,13 @@ a[:-3:-1]			# the last two items, reversed
 a[-3::-1]			# everything except the last two items, reversed
 '''
 
+# Turn data into global frame
+def data_to_global_frame(sample, attitude):
+	for row in range(0, attitude.shape[0]):
+		Cb = np.reshape(attitude[row,:], (3,3))
+		for i in range(0, 6, 3):
+			sample[row, i:i+3] = np.dot(Cb.T, sample[row, i:i+3].T)
+	return sample
 
 
 def get_realization_min_length(data):
@@ -176,14 +183,16 @@ for column in data:
 	sample_activities = data[column][2][0]
 	indexes = np.squeeze(data[column][3]) - 1 # Remove 1 since data are saved in matlab and indexes start from 1 D:
 
-	# Remove time from sample matrix
+	# Remove time from sample and attitude matrix
 	sample = sample[:,1:]
+	attitude = attitude[:,1:]
 
-	# Change of coordinates to be in global frame
-	sample *= attitude[:,1:]
+	# Turn data into global frame
+	sample = data_to_global_frame(sample,attitude)
 
 	# Remove unlabeled data
 	[sample, indexes] = preprocessing(sample, indexes)
+
 
 	# Transform samples to extract modules
 #	modules = np.zeros((sample.shape[0], 3))

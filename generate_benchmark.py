@@ -37,7 +37,7 @@ right_predictions = 0
 total_predictions = 0
 #total_transit = 0
 #right_transit = 0
-activity_recognizer = load_model('activity_recognizer.h5')
+activity_recognizer = load_model('activity_recognizer_10_128.h5')
 
 # Cycle over all the people in the dataset
 for column in data:
@@ -101,6 +101,4 @@ for column in data:
 
 print("Number of windows: " + str(counter))
 print("Total predictions: " + str(total_predictions))
-print("Total transitions: " + str(total_transit))
-print("Right transitions: " + str(right_transit))
 print("Prediction accuracy: " + str(right_predictions/total_predictions))

@@ -113,7 +113,10 @@ def create_transit_pattern(sample, indexes, min_pattern_length):
 
 	# Create transit patterns
 	for i in range(2,indexes.shape[0],2):
-		shift_vector = [indexes[i]-24, indexes[i]-19, indexes[i]-14, indexes[i]-9, indexes[i]-4]
+		shift_vector = []
+		for k in range(10, min_pattern_length - 9):
+			shift_vector.append(indexes[i] - min_pattern_length + k)
+		# shift_vector = [indexes[i]-24, indexes[i]-21, indexes[i]-18, indexes[i]-15, indexes[i]-14,indexes[i]-12, indexes[i]-9, indexes[i]-7, indexes[i]-6, indexes[i]-3]
 
 		for j in range(len(shift_vector)):
 			window = sample[shift_vector[j]:shift_vector[j]+min_pattern_length, :]
@@ -136,15 +139,15 @@ def add_gaussian_noise(pattern):
 # Add noisy pattern to the original list of tuples
 def data_augmentation(tuples, list_of_labels):
 	original_tuples = tuples
-	
+
 	for j in range(len(list_of_labels)):
-		
+
 		for i in range(np.shape(original_tuples)[0]):
 
 			if (original_tuples[i][1][list_of_labels[j]] == 1):
 				noisy_pattern = add_gaussian_noise(original_tuples[i][0])
 				tuples.append([noisy_pattern, original_tuples[i][1]])
-	
+
 	return tuples
 
 
@@ -155,7 +158,7 @@ def data_augmentation(tuples, list_of_labels):
 
 
 # Build the structures
-activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRNSACC': 9, 'TRNSDCC': 10, 'TRANSIT': 11}
+activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRNSACC': 9, 'TRNSDCC': 10}#, 'TRANSIT': 11}
 
 # Read the .mat file
 mat = sio.loadmat('ARS_DLR_DataSet_V2.mat')
@@ -201,9 +204,9 @@ for column in data:
 #		w_module = np.sqrt(np.sum(np.square(sample[i,3:6])))
 #		mag_module = np.sqrt(np.sum(np.square(sample[i,6:9])))
 #		modules[i] = np.array([acc_module, w_module, mag_module])
-	
-	
-	
+
+
+
 
 	for i in range(0, indexes.shape[0], 2):
 		whole_pattern = sample[indexes[i]:indexes[i+1], :]
@@ -225,21 +228,10 @@ for column in data:
 		tuples.append([window, one_hot_Y])
 		tracker[label] += 1
 
-		# Transitorial pattern added
-		transit_pattern = create_transit_pattern(sample, indexes, min_pattern_length)
-		tuples.append(transit_pattern[0])
-		tuples.append(transit_pattern[1])
-		tuples.append(transit_pattern[2])
-		tuples.append(transit_pattern[3])
-		tuples.append(transit_pattern[4])
-		#tracker[11] += 4
-
-# Counting how many times a label appears
-list_of_labels = []
-for i in range(tracker.size):
-	if (tracker[i] < 900):
-		list_of_labels.append(i)
-
+		# # Transitorial pattern added
+		# transit_pattern = create_transit_pattern(sample, indexes, min_pattern_length)
+		# for i in range(0, np.shape(transit_pattern)[0]):
+		# 	tuples.append(transit_pattern[i])
 
 # Add noisy patterns to tuples list
 #tuples = data_augmentation(tuples, list_of_labels)

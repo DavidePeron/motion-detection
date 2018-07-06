@@ -37,6 +37,7 @@ def ActivityRecognizer(input_shape):
 	X = Dropout(0.15)(X)
 	#X = MaxPooling1D(2, strides = 2)(X)
 
+
 	X = Conv1D(32, 3, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
@@ -59,7 +60,7 @@ def ActivityRecognizer(input_shape):
 	X = Dense(128, activation = 'relu')(X)
 
 	X = Dropout(0.5)(X)
-	X = Dense(12, activation = 'softmax')(X)
+	X = Dense(11, activation = 'softmax')(X)
 
 	#this creates the Keras model instance, this instance is gonna be used to train/test the model
 	model = Model(inputs = X_input, outputs = X)
@@ -93,7 +94,7 @@ activity_recognizer.compile(optimizer = "adam", loss = "categorical_crossentropy
 #activity_recognizer = load_model('trial7.h5')
 
 # TRAIN THE MODEL
-activity_recognizer.fit(x = X_train, y = Y_train, validation_split=0.2, epochs = 4, batch_size = 128) #verbose = 0,
+activity_recognizer.fit(x = X_train, y = Y_train, validation_split=0.2, epochs = 40, batch_size = 128) #verbose = 0,
 
 # TEST THE MODEL
 loss, acc = activity_recognizer.evaluate(x = X_test, y = Y_test)

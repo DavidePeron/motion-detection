@@ -32,7 +32,7 @@ def data_to_global_frame(sample, attitude):
 
 
 # Build the structures
-activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRNSACC': 9, 'TRNSDCC': 10, 'TRANSIT': 11}
+activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRNSACC': 9, 'TRNSDCC': 10}#, 'TRANSIT': 11}
 
 # Read the .mat file
 mat = sio.loadmat('ARS_DLR_Benchmark_Data_Set.mat')
@@ -82,6 +82,8 @@ while(left_limit + window_size <= sample.shape[0]):
 	if(left_limit + window_size <= indexes[pointer*2+1]):
 		total_predictions += 1
 		true_label = activities_dict[sample_activities[pointer][0]]
+		if(predicted_label == true_label):
+			right_predictions += 1
 
 	elif(pointer + 1 < sample_activities.shape[0]):
 		if(left_limit >= indexes[(pointer+1) * 2]):
@@ -91,16 +93,18 @@ while(left_limit + window_size <= sample.shape[0]):
 			true_label = activities_dict[sample_activities[pointer][0]]
 			print(sample_activities[pointer][0] + " ----------- " + str(true_label))
 			print("Predicted label: " + str(predicted_label))
-		else:
-			# Transitions, not recognized
-			true_label = 11
-			total_predictions += 1
-			total_transit += 1
 			if(predicted_label == true_label):
-				right_transit += 1
+				right_predictions += 1
+		# else:
+		# 	# Transitions, not recognized
+		# 	true_label = 11
+		# 	total_predictions += 1
+		# 	total_transit += 1
+		# 	if(predicted_label == true_label):
+		# 		right_transit += 1
 
-	if(predicted_label == true_label):
-		right_predictions += 1
+	# if(predicted_label == true_label):
+	# 	right_predictions += 1
 
 	left_limit += shift
 
@@ -109,4 +113,3 @@ print("Total predictions: " + str(total_predictions))
 print("Total transitions: " + str(total_transit))
 print("Right transitions: " + str(right_transit))
 print("Prediction accuracy: " + str(right_predictions/total_predictions))
-

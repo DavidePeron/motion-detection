@@ -4,6 +4,7 @@ import numpy as np
 import h5py
 import matplotlib.pyplot as plt
 import logging
+from utility import *
 
 '''
 promemoria per gli indici
@@ -20,15 +21,6 @@ a[1::-1]			# the first two items, reversed
 a[:-3:-1]			# the last two items, reversed
 a[-3::-1]			# everything except the last two items, reversed
 '''
-
-# Turn data into global frame
-def data_to_global_frame(sample, attitude):
-	for row in range(0, attitude.shape[0]):
-		Cb = np.reshape(attitude[row,:], (3,3))
-		for i in range(0, 6, 3):
-			sample[row, i:i+3] = np.dot(Cb.T, sample[row, i:i+3].T)
-	return sample
-
 
 def get_realization_min_length(data):
 	array_of_lenghts = np.array([])

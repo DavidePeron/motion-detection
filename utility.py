@@ -18,3 +18,14 @@ def resize_input(X_train, Y_train, X_test, Y_test):
 	Y_test = np.reshape(Y_test, (np.shape(Y_test)[0], np.shape(Y_test)[1]))
 
 	return X_train, Y_train, X_test, Y_test
+
+
+# Turn data into global frame
+def data_to_global_frame(sample, attitude):
+	for row in range(0, attitude.shape[0]):
+		Cb = np.reshape(attitude[row,:], (3,3))
+		for i in range(0, 6, 3):
+			sample[row, i:i+3] = np.dot(Cb.T, sample[row, i:i+3].T)
+	return sample
+
+

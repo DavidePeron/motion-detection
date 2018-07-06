@@ -21,16 +21,6 @@ import keras.backend as K
 K.set_image_data_format('channels_last')
 
 
-# Turn data into global frame
-def data_to_global_frame(sample, attitude):
-	for row in range(0, attitude.shape[0]):
-		Cb = np.reshape(attitude[row,:], (3,3))
-		for i in range(0, 6, 3):
-			sample[row, i:i+3] = np.dot(Cb.T, sample[row, i:i+3].T)
-	return sample
-
-
-
 # Build the structures
 activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRNSACC': 9, 'TRNSDCC': 10}#, 'TRANSIT': 11}
 

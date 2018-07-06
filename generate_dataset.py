@@ -106,7 +106,7 @@ def create_transit_pattern(sample, indexes, min_pattern_length):
 
 	# Create transit patterns
 	for i in range(2,indexes.shape[0],2):
-		shift_vector = [indexes[i]-20, indexes[i]-15, indexes[i]-10, indexes[i]-5]
+		shift_vector = [indexes[i]-24, indexes[i]-19, indexes[i]-14, indexes[i]-9, indexes[i]-4]
 
 		for j in range(len(shift_vector)):
 			window = sample[shift_vector[j]:shift_vector[j]+min_pattern_length, :]
@@ -222,6 +222,7 @@ for column in data:
 		tuples.append(transit_pattern[1])
 		tuples.append(transit_pattern[2])
 		tuples.append(transit_pattern[3])
+		tuples.append(transit_pattern[4])
 		#tracker[11] += 4
 
 # Counting how many times a label appears

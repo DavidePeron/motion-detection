@@ -59,13 +59,13 @@ def ActivityRecognizer(input_shape):
 	X = Dense(128, activation = 'relu')(X)
 
 	X = Dropout(0.5)(X)
-	X = Dense(11, activation = 'softmax')(X)
+	X = Dense(12, activation = 'softmax')(X)
 
 	#this creates the Keras model instance, this instance is gonna be used to train/test the model
 	model = Model(inputs = X_input, outputs = X)
 	return model
 
-#returns only X_train and Y_train
+# Returns only X_train and Y_train
 X_train, Y_train, X_test, Y_test = load_dataset()
 
 print('X_train shape = ' + str(X_train.shape))
@@ -73,39 +73,41 @@ print('Y_train shape = ' + str(Y_train.shape))
 print('X_test shape = ' + str(X_test.shape))
 print('Y_test shape = ' + str(Y_test.shape))
 
-#channel(=1) added at the end of each tuple
+# Channel(=1) added at the end of each tuple
 X_train, Y_train, X_test, Y_test = resize_input(X_train, Y_train, X_test, Y_test)
 
 print('X_train shape = ' + str(X_train.shape))
 print('Y_train shape = ' + str(Y_train.shape))
 print('X_test shape = ' + str(X_test.shape))
 print('Y_test shape = ' + str(Y_test.shape))
-#CREATE THE MODEL
+
+# CREATE THE MODEL
 activity_recognizer = ActivityRecognizer(X_train.shape[1:])
 
 activity_recognizer.summary()
 
 
-#COMPILE THE MODEL
+# COMPILE THE MODEL
 activity_recognizer.compile(optimizer = "adam", loss = "categorical_crossentropy", metrics = ["accuracy"])
 
 #activity_recognizer = load_model('trial7.h5')
-#TRAIN THE MODEL
-activity_recognizer.fit(x = X_train, y = Y_train, validation_split=0.2, epochs = 3, batch_size = 128) #verbose = 0,
 
-#TEST THE MODEL
+# TRAIN THE MODEL
+activity_recognizer.fit(x = X_train, y = Y_train, validation_split=0.2, epochs = 4, batch_size = 128) #verbose = 0,
+
+# TEST THE MODEL
 loss, acc = activity_recognizer.evaluate(x = X_test, y = Y_test)
 print ("Loss = " + str(loss))
 print ("Test Accuracy = " + str(acc))
 
 
 
-#SAVE THE MODEL
+# SAVE THE MODEL
 #crates an HDF5 file 'activity_recognizer.h5'
 activity_recognizer.save('activity_recognizer.h5')
 
 '''
-#LOAD THE MODEL
+# LOAD THE MODEL
 #if I want to use the activity_recognizer.h5 model to test new patterns
 model = load_model('activity_recognizer.h5')
 '''

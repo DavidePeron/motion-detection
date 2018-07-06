@@ -94,7 +94,7 @@ activity_recognizer.compile(optimizer = "adam", loss = "categorical_crossentropy
 #activity_recognizer = load_model('trial7.h5')
 
 # TRAIN THE MODEL
-activity_recognizer.fit(x = X_train, y = Y_train, validation_split=0.2, epochs = 40, batch_size = 128) #verbose = 0,
+activity_recognizer.fit(x = X_train, y = Y_train, validation_split=0.2, epochs = 10, batch_size = 128) #verbose = 0,
 
 # TEST THE MODEL
 loss, acc = activity_recognizer.evaluate(x = X_test, y = Y_test)

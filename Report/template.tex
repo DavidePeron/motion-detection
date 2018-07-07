@@ -96,14 +96,14 @@ In order to make an action recognition model it was firstly created a proper dat
 When the neural network was trained and tested, (SISTEMA)
 
 
-\section{Signals and features}
+\section{Signals and dataset}
 \subsection{Measurement setup}
 The signals we have worked on were provided by DLR official website \cite{DLR}. We took into considerations two of the three published Matlab datasets: \textit{ARS\_DLR\_Data\_Set\_V2.mat} and \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}. 
 Both of them are made up of signals recovered by a micro-electromechanical system (MEM) based IMU composed by an accelerometer, a gyroscope and a magnetometer. These measurements systems provide informations about the intertial acceleration, the angular velocity and the magnetic field direction.
 At the experiment joined fourteen people and the IMU, that was positioned over the pelvic region of each one (Figure \ref{fig:IMU}), recovered signals during some ordinary motion activities like \textit{standing}, \textit{sitting}, \textit{running}, \textit{jumping}, \textit{lying} and all the trasitional phases from an activity to another.
 
 \begin{figure}
-\includegraphics[scale=1.2]{images/IMU_sensor.pdf}
+\includegraphics[scale=1.2]{IMU_sensor.pdf}
 \caption{Sensor position and the representation of the local frame}
 \label{fig:IMU}
 \end{figure}
@@ -124,25 +124,46 @@ From these figures emerges that the mean of angular velocity and the magnetic fi
 It also emerges in each of there figure how the transitorial activities from standing to sitting and vice versa can be observable due to the drastic change of the signals.
 
 \begin{figure}
-\includegraphics[scale=0.55]{images/acceleration_susanna.pdf}
+\includegraphics[scale=0.55]{acceleration_susanna.pdf}
 \caption{}
 \label{fig:acc}
 \end{figure}
 
 \begin{figure}
-\includegraphics[scale=0.55]{images/angular_velocity_susanna.pdf}
+\includegraphics[scale=0.55]{angular_velocity_susanna.pdf}
 \caption{}
 \label{fig:gyr}
 \end{figure}
 
 \begin{figure}
-\includegraphics[scale=0.55]{images/magnetic_field_susanna.pdf}
+\includegraphics[scale=0.55]{magnetic_field_susanna.pdf}
 \caption{}
 \label{fig:mag}
 \end{figure}
 
 
+Another sort of pre-processing was made in order to fix the activity indexing of some recordings. It frequently happened to find that, considering two adjacent motion activities, the end of the previous activity and the beginning of the succeeding one were not temporarily neighboring. It happened also to find two activities temporarily overlapping: the end of the previous activity was indexed after the beginning of the second one. 
+The authors resolved the problem removing the non indexed data and the data whose label was uncertain so as to not train the NN with wrongly labeled data.
 
+
+\section{Learning framework}
+
+
+\section{Results}
+
+\section{Concluding remarks}
+
+\begin{figure}
+\includegraphics[scale=0.55]{precision.pdf}
+\caption{}
+\label{fig:precision}
+\end{figure}
+
+\begin{figure}
+\includegraphics[scale=0.55]{recall.pdf}
+\caption{}
+\label{fig:recall}
+\end{figure}
 
 
 

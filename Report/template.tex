@@ -1,5 +1,6 @@
 \documentclass[10pt, conference, letterpaper]{IEEEtran}
 
+
 \usepackage{algorithm}
 \usepackage{algorithmicx}
 \usepackage{algpseudocode}
@@ -72,7 +73,7 @@
 \begin{abstract}
 Body sensors play an increasingly important role in our everyday life, they can be fundamental in terms of survival and health (think to pacemakers, bionic eye, bionic ear, etc.) or they offer us a new kinds of entertainment (such as fitness bands, sensors used in video games, etc.).
 
-In most cases, especially in sensors that make use of \glspl{imu}, gyroscopes or magnetometers, a motion recognition system is required. Depending on the application, these motions can be both little gestures or complex activity in which the entire body moves.
+In most cases, especially in sensors that make use of \glspl{imu}, a motion recognition system is required. Depending on the application, these motions can be both little gestures or complex activity in which the entire body moves.
 A lot of effort has been put in find an efficient way to recognize in real time everyday activities and apply these solutions to a wide range of scenarios like first responders, assisted living rehabilitation, etc.
 
 In this work CNN-based activity recognition systems are investigated and different architectures are tried. The goal learn a \gls{cnn} capable of recognizing 11 different types of activities, showing that this type of \gls{ann} can give good predictions also with 1D data.
@@ -80,9 +81,71 @@ In this work CNN-based activity recognition systems are investigated and differe
 The resulting prediction accuracy in real-time application reveal that this architecture performs well in the learning phase but gives poor accuracy when tried on new data.
 \end{abstract}
 
+
+
+
+
 \IEEEkeywords
 Activity recognition, Convolutional Neural Networks, Machine Learning, Real-time systems, Inertial sensors
 \endIEEEkeywords
+
+
+\section{Processing pipeline}
+The project can be divided in 3 parts: the dataset creation, the neural network creation and the benchmark prediction.
+In order to make an action recognition model it was firstly created a proper dataset. All the signals were divided in several overlapping windows and were thrown into a Convolutional Neural Network (CNN) made up with convolutional layers and fully connected layers.
+When the neural network was trained and tested, (SISTEMA)
+
+
+\section{Signals and features}
+\subsection{Measurement setup}
+The signals we have worked on were provided by DLR official website \cite{DLR}. We took into considerations two of the three published Matlab datasets: \textit{ARS\_DLR\_Data\_Set\_V2.mat} and \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}. 
+Both of them are made up of signals recovered by a micro-electromechanical system (MEM) based IMU composed by an accelerometer, a gyroscope and a magnetometer. These measurements systems provide informations about the intertial acceleration, the angular velocity and the magnetic field direction.
+At the experiment joined fourteen people and the IMU, that was positioned over the pelvic region of each one (Figure \ref{fig:IMU}), recovered signals during some ordinary motion activities like \textit{standing}, \textit{sitting}, \textit{running}, \textit{jumping}, \textit{lying} and all the trasitional phases from an activity to another.
+
+\begin{figure}
+\includegraphics[scale=1.2]{images/IMU_sensor.pdf}
+\caption{Sensor position and the representation of the local frame}
+\label{fig:IMU}
+\end{figure}
+
+The considered datasets are divided only because they have to be used in different ways, but they are going to be described in the same way according to their identity.
+
+Both datasets are divided in activity sessions, each session is a structure in turn (a sua volta) that contains: a matrix of 10 column in which the first column represents the time domain and the other ones represents the IMU records over the three local coordinate, a rotation matrix that has the same dimension of the first one that permits to turn to the global frame the first matrix, a vector that contains the activity labels performed during the session and lastly a vector that indicates when each activity starts and ends.
+
+
+\subsection{Signal pre-processing}
+The first pre-processing applied to the dataset consisted in representing the signals according to the global frame
+FROM LOCAL TO GLOBAL FRAME: (MANCA)
+
+
+The dataset considered already contains pre-processed data, sampled with T = 0.01 s. In Figure \ref{fig:acc}, \ref{fig:gyr} and \ref{fig:mag} is showed one of the Susanna activity sessions. These figures represent the norm of accelerometer, gyroscope and magnetometer over the three global coordinats insead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm.
+From these figures emerges that the mean of angular velocity and the magnetic field swings around zero, on the other hand the acceleration mean shifts near 9.8 m/s according to the gravitational constant value \textit{g}.
+
+It also emerges in each of there figure how the transitorial activities from standing to sitting and vice versa can be observable due to the drastic change of the signals.
+
+\begin{figure}
+\includegraphics[scale=0.55]{images/acceleration_susanna.pdf}
+\caption{}
+\label{fig:acc}
+\end{figure}
+
+\begin{figure}
+\includegraphics[scale=0.55]{images/angular_velocity_susanna.pdf}
+\caption{}
+\label{fig:gyr}
+\end{figure}
+
+\begin{figure}
+\includegraphics[scale=0.55]{images/magnetic_field_susanna.pdf}
+\caption{}
+\label{fig:mag}
+\end{figure}
+
+
+
+
+
+
 
 
 \input{intro}

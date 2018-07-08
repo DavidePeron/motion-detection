@@ -1,0 +1,25 @@
+\documentclass{standalone}
+
+\usepackage[latin1]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{arrows,calc,positioning,shadows,shapes}
+\begin{document}
+\pagestyle{empty}
+
+\tikzstyle{line} = [draw, -latex']
+
+\tikzset{label/.style={draw=gray, ultra thin, rounded corners=.25ex,text width=4cm, text badly centered,  inner sep=2ex, anchor=east}}
+
+\begin{tikzpicture}[node distance=5cm,auto,>=latex']
+% Place nodes
+\node [label] (init) {Signal preprocessing};
+\node [label, right of=init] (node) {Feature extraction};
+\node [label, right of=node] (node1) {Classification};
+
+% Draw edges
+\path [line] (init) -- (node);
+\path [line] (node) -- (node1);
+
+\end{tikzpicture}
+
+\end{document}

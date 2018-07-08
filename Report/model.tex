@@ -2,18 +2,20 @@
 
 \section{Processing Pipeline}
 \label{sec:processing_architecture}
+The project can be divided in 3 parts: the dataset creation, the neural network creation and the benchmark prediction.
+In order to make an action recognition model it was firstly created a proper dataset. All the signals were divided in several overlapping windows and were thrown into a \gls{cnn} made up with convolutional layers and fully connected layers.
+When the neural network was trained and tested, (SISTEMA)
 
-\MR{The project can be divided in 3 parts: the dataset creation, the neural network creation and the benchmark prediction.
-In order to make an action recognition model it was firstly created a proper dataset. All the signals were divided in several overlapping windows and were thrown into a Convolutional Neural Network (CNN) made up with convolutional layers and fully connected layers.
-When the neural network was trained and tested, (SISTEMA)}
+- DRAW A DIAGRAM OF THE PIPELINE
+- DESCRIPTION OF THE GENERAL APPROACH
 
 \section{Signals and Dataset}
 \label{sec:model}
 
 \subsection{Measurement setup}
-\MR{The signals we have worked on were provided by DLR official website \cite{DLR}. We took into considerations two of the three published Matlab datasets: \textit{ARS\_DLR\_Data\_Set\_V2.mat} and \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}. 
-Both of them are made up of signals recovered by a micro-electromechanical system (MEM) based IMU composed by an accelerometer, a gyroscope and a magnetometer. These measurements systems provide informations about the intertial acceleration, the angular velocity and the magnetic field direction.
-At the experiment joined fourteen people and the IMU, that was positioned over the pelvic region of each one (Figure \ref{fig:IMU}), recovered signals during some ordinary motion activities like \textit{standing}, \textit{sitting}, \textit{running}, \textit{jumping}, \textit{lying} and all the trasitional phases from an activity to another.
+The signals we have worked on were provided by DLR official website \cite{DLR}. We took into considerations two of the three published Matlab datasets: \textit{ARS\_DLR\_Data\_Set\_V2.mat} and \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}. 
+Both of them are made up of signals recovered by a \gls{mems} based \gls{imu} composed by an accelerometer, a gyroscope and a magnetometer. These measurements systems provide informations about the intertial acceleration, the angular velocity and the magnetic field direction.
+At the experiment joined fourteen people and the \gls{imu}, that was positioned over the pelvic region of each one (\fig{fig:IMU}), recovered signals during some ordinary motion activities like \textit{standing}, \textit{sitting}, \textit{running}, \textit{jumping}, \textit{lying} and all the trasitional phases from an activity to another.
 
 \begin{figure}
 \includegraphics[scale=1.2]{IMU_sensor.pdf}
@@ -23,17 +25,17 @@ At the experiment joined fourteen people and the IMU, that was positioned over t
 
 The considered datasets are divided only because they have to be used in different ways, but they are going to be described in the same way according to their identity.
 
-Both datasets are divided in activity sessions, each session is a structure in turn (a sua volta) that contains: a matrix of 10 column in which the first column represents the time domain and the other ones represents the IMU records over the three local coordinate, a rotation matrix that has the same dimension of the first one that permits to turn to the global frame the first matrix, a vector that contains the activity labels performed during the session and lastly a vector that indicates when each activity starts and ends.}
+Both datasets are divided in activity sessions, each session is a structure in turn (a sua volta) that contains: a matrix of 10 column in which the first column represents the time domain and the other ones represents the IMU records over the three local coordinate, a rotation matrix that has the same dimension of the first one that permits to turn to the global frame the first matrix, a vector that contains the activity labels performed during the session and lastly a vector that indicates when each activity starts and ends.
 
 \subsection{Signal pre-processing}
-\MR{The first pre-processing applied to the dataset consisted in representing the signals according to the global frame
+The first pre-processing applied to the dataset consisted in representing the signals according to the global frame
 FROM LOCAL TO GLOBAL FRAME: (MANCA)
 
 
-The dataset considered already contains pre-processed data, sampled with T = 0.01 s. In Figure \ref{fig:acc}, \ref{fig:gyr} and \ref{fig:mag} is showed one of the Susanna activity sessions. These figures represent the norm of accelerometer, gyroscope and magnetometer over the three global coordinats insead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm.
+The dataset considered already contains pre-processed data, sampled with T = 0.01 s. In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of the Susanna activity sessions. These figures represent the norm of accelerometer, gyroscope and magnetometer over the three global coordinats insead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm.
 From these figures emerges that the mean of angular velocity and the magnetic field swings around zero, on the other hand the acceleration mean shifts near 9.8 m/s according to the gravitational constant value \textit{g}.
 
-It also emerges in each of there figure how the transitorial activities from standing to sitting and vice versa can be observable due to the drastic change of the signals.
+It also emerges in each of these figures how the transitorial activities from standing to sitting and vice versa can be observable due to the drastic change of the signals.
 
 \begin{figure}
 \includegraphics[scale=0.55]{acceleration_susanna.pdf}
@@ -55,9 +57,17 @@ It also emerges in each of there figure how the transitorial activities from sta
 
 
 Another sort of pre-processing was made in order to fix the activity indexing of some recordings. It frequently happened to find that, considering two adjacent motion activities, the end of the previous activity and the beginning of the succeeding one were not temporarily neighboring. It happened also to find two activities temporarily overlapping: the end of the previous activity was indexed after the beginning of the second one. 
-The authors resolved the problem removing the non indexed data and the data whose label was uncertain so as to not train the NN with wrongly labeled data.}
+The authors resolved the problem removing the non indexed data and the data whose label was uncertain so as to not train the NN with wrongly labeled data.
+
+At the end of the day each session were represened by a matrix with nine columns (three for each measurement system) and a number of rows equals to the session duration. Due to the straight sampling time the number of rows were usually in the order of MILLE!!(find that number), which made each session a very long and straight matrix. According to the adopted strategy of \textit{Gadaleta et al.}, the input shape could be suitable to be processed into a Convolutional Neural Network \cite{Gadaleta-2018}. Even if the data the authors have worked on is tempr
 
 \section{Learning Framework}
 \label{sec:learning_framework}
 
-\MR{Here you finally describe the learning strategy / algorithm that you conceived and used to solve the problem at stake. A good diagram to exemplify how learning is carried out is often very useful. In this section, you should describe the learning model, its parameters, any optimization over a given parameter set, etc. You can organize this section in \mbox{sub-sections}. You are free to choose the most appropriate structure.}
+MR{Here you finally describe the learning strategy / algorithm that you conceived and used to solve the problem at stake. A good diagram to exemplify how learning is carried out is often very useful. In this section, you should describe the learning model, its parameters, any optimization over a given parameter set, etc. You can organize this section in \mbox{sub-sections}. You are free to choose the most appropriate structure.}
+
+
+
+
+
+

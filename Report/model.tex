@@ -15,18 +15,18 @@ When the neural network was trained and tested,
 
 \subsection{Measurement setup}
 The signals the authors have worked on were provided by DLR official website \cite{DLR}. We took into considerations two of the three published Matlab datasets: \textit{ARS\_DLR\_Data\_Set\_V2.mat} and \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}. 
-Both of them are made up of signals recovered by a \gls{mems} based \gls{imu} composed by an accelerometer, a gyroscope and a magnetometer. These measurements systems provide informations about the inertial acceleration, the angular velocity and the magnetic field direction.
+Both of them are made up of signals recovered by a \gls{mems} based \gls{imu} (an Xsens MTx-28A53G25) composed by an accelerometer, a gyroscope and a magnetometer. These measurements systems provide informations about the inertial acceleration, the angular velocity and the magnetic field direction.
 At the experiment joined fourteen people and the \gls{imu}, that was positioned over the pelvic region of each one (\fig{fig:IMU}), recovered signals during some ordinary motion activities like \textit{standing}, \textit{sitting}, \textit{running}, \textit{jumping}, \textit{lying} and all the transitional phases from an activity to another.
 
 \begin{figure}[htp]
 \includegraphics[scale=1.2]{IMU_sensor.pdf}
-\caption{Sensor position and the representation of the local frame}
+\caption{Sensor position and the representation of the body frame}
 \label{fig:IMU}
 \end{figure}
 
 The considered datasets are divided only because they have to be used in different ways, but they are going to be described in the same way according to their identity.
 
-Both datasets are divided in activity sessions, each session is a structure in turn (a sua volta) that contains: a matrix of 10 column in which the first column represents the time domain and the other ones represents the \gls{imu} records over the three local coordinate, a rotation matrix that has the same dimension of the first one that permits to turn to the global frame the first matrix, a vector that contains the activity labels performed during the session (see \tab{tab:label}) and lastly a vector that indicates when each activity starts and ends.
+Both datasets are divided in activity sessions, each session is a structure in turn (a sua volta) that contains: a matrix of 10 column in which the first column represents the time domain and the other ones represents the \gls{imu} records over the three sensor coordinate, a rotation matrix that has the same dimension of the first one that permits to turn to the global frame the first matrix, a vector that contains the activity labels performed during the session (see \tab{tab:label}) and lastly a vector that indicates when each activity starts and ends.
 
 \begin{table}[htp]
 \small
@@ -46,7 +46,7 @@ Both datasets are divided in activity sessions, each session is a structure in t
 	'TRANSDW' & $8$ & going down i.e.: from standing to sitting\\
 	'TRNSACC' & $9$ & accelerating\\
 	'TRNSDCC' & $10$ & deccelerating\\
-	'TRANSIT' & $11$ & other transition or irrelevant information\\
+	%'TRANSIT' & $11$ & other transition or irrelevant information\\
 	\bottomrule
 	\end{tabular}
 	\caption{Activities took into consideration with the associated labels}
@@ -59,8 +59,17 @@ The first pre-processing applied to the dataset consisted in representing the si
 \MC{FROM LOCAL TO GLOBAL FRAME: (MANCA)}
 
 
-The dataset considered already contains pre-processed data, sampled with T = 0.01 s. In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of the Susanna activity sessions. These figures represent the norm of accelerometer, gyroscope and magnetometer over the three global coordinates instead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm.
+The dataset considered already contains pre-processed data, sampled with T = 0.01 s. In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of the Susanna activity sessions. These figures represent the norm (see \eq{eq:norm}) of accelerometer, gyroscope and magnetometer over the three global coordinates instead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm. 
 From these figures emerges that the mean of angular velocity and the magnetic field swings around zero, on the other hand the acceleration mean shifts near 9.8 m/s according to the gravitational constant value \textit{g}.
+
+\begin{equation}
+|s| = \sqrt{s_x^2+s_y^2+s_z^2}
+\end{equation}
+%\caption{Norm of s, s can be one of acceleration, angular velocity or mangnetometer}
+\label{eq:norm}
+\MC{problems with caption in the norm equation}
+
+
 
 It also emerges in each of these figures how the transitory activities from standing to sitting and vice versa can be observable due to the drastic change of the signals.
 
@@ -91,10 +100,14 @@ Each session is finally represented by a long and straight matrix with nine colu
 
 Since the \gls{cnn} needs a fixed input the authors decided to divide in patterns each session matrix and associate to them the corresponding label. The pattern length was decided equal to the shortest activity length in the whole dataset.
 
+
+
+Then 
+
 \MC{
 -how the patterns were token\\
 -transitional pattern are not token\\
--TRANST label is counted in README but no transit pttern appear in the dataset\\
+-TRANST label is counted in README but no transit pattern appear in the dataset\\
 -TRANSIT data in the dataset->yes or no\\
 }
 
@@ -104,7 +117,22 @@ Since the \gls{cnn} needs a fixed input the authors decided to divide in pattern
 
 \MR{Here you finally describe the learning strategy / algorithm that you conceived and used to solve the problem at stake. A good diagram to exemplify how learning is carried out is often very useful. In this section, you should describe the learning model, its parameters, any optimization over a given parameter set, etc. You can organize this section in \mbox{sub-sections}. You are free to choose the most appropriate structure.}
 
+\begin{figure}[htp]
+\includegraphics[scale=1.7]{CNN_arch.eps}
+\caption{\gls{cnn} architecture}
+\label{fig:CNN}
+\end{figure}
 
+\MC{here i'd put the processor chaaracteristics}
+
+
+The \gls{cnn} architecture is schematically presented in \fig{fig:CNN} and in this section is going to be explained in details using the showed labeling of the layers. 
+Because of the imposed fixed input shape of the \gls{cnn}, the dataset is composed by \MR{MILLE!!!} patterns with shape (27,9) that have been elaborated with a batch of \MR{MILLE!!!}.
+   
+
+After the 4 banchs of convolutional layers the filters are extracted
+
+At the end the output layer presents a number of elements equal to the number of the activity labels considered.
 
 
 

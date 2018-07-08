@@ -25,6 +25,12 @@
 \usepackage{setspace}
 \usepackage{stackengine}
 
+\usepackage{threeparttable}
+%\usepackage[table,xcdraw]{xcolor}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{booktabs}
+
 \renewcommand{\thetable}{\arabic{table}}
 \renewcommand{\thesubtable}{\alph{subtable}}
 
@@ -73,7 +79,7 @@
 \maketitle
 
 \begin{abstract}
-Body sensors play an increasingly important role in our everyday life, they can be fundamental in terms of survival and health (think to pacemakers, bionic eye, bionic ear, etc.) or they offer us a new kinds of entertainment (such as fitness bands, sensors used in video games, etc.).
+Body sensors play an increasingly important role in our everyday life, they can be fundamental in terms of survival and health (think about pacemakers, bionic eye, bionic ear, etc.) or they offer us a new kinds of entertainment (such as fitness bands, sensors used in video games, etc.).
 
 In most cases, especially in sensors that make use of \glspl{imu}, a motion recognition system is required. Depending on the application, these motions can be both little gestures or complex activity in which the entire body moves.
 A lot of effort has been put in find an efficient way to recognize in real time everyday activities and apply these solutions to a wide range of scenarios like first responders, assisted living rehabilitation, etc.

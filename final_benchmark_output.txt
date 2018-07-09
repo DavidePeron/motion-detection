@@ -1,0 +1,141 @@
+(base) C:\motion-detection>python generate_benchmark.py
+Using TensorFlow backend.
+2018-07-09 10:05:18.248433: I T:\src\github\tensorflow\tensorflow\core\platform\cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2
+2018-07-09 10:05:19.260182: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1356] Found device 0 with properties:
+name: GeForce GTX 1050 major: 6 minor: 1 memoryClockRate(GHz): 1.493
+pciBusID: 0000:01:00.0
+totalMemory: 4.00GiB freeMemory: 3.30GiB
+2018-07-09 10:05:19.269851: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1435] Adding visible gpu devices: 0
+2018-07-09 10:05:20.026325: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:923] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-07-09 10:05:20.033448: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:929]      0
+2018-07-09 10:05:20.038282: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:942] 0:   N
+2018-07-09 10:05:20.043147: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1053] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 3038 MB memory) -> physical GPU (device: 0, name: GeForce GTX 1050, pci bus id: 0000:01:00.0, compute capability: 6.1)
+TRANSDW ----------- 8
+Predicted label: 1
+SITTING ----------- 4
+Predicted label: 4
+TRANSUP ----------- 7
+Predicted label: 4
+STNDING ----------- 3
+Predicted label: 3
+WALKING ----------- 1
+Predicted label: 3
+JUMPING ----------- 2
+Predicted label: 2
+STNDING ----------- 3
+Predicted label: 3
+TRNSACC ----------- 9
+Predicted label: 4
+WALKING ----------- 1
+Predicted label: 1
+TRNSACC ----------- 9
+Predicted label: 1
+RUNNING ----------- 0
+Predicted label: 2
+JUMPING ----------- 2
+Predicted label: 2
+STNDING ----------- 3
+Predicted label: 5
+TRNSACC ----------- 9
+Predicted label: 1
+WALKING ----------- 1
+Predicted label: 1
+FALLING ----------- 6
+Predicted label: 1
+XLYINGX ----------- 5
+Predicted label: 5
+TRANSUP ----------- 7
+Predicted label: 6
+STNDING ----------- 3
+Predicted label: 3
+TRANSDW ----------- 8
+Predicted label: 1
+SITTING ----------- 4
+Predicted label: 5
+TRANSUP ----------- 7
+Predicted label: 4
+STNDING ----------- 3
+Predicted label: 3
+TRNSACC ----------- 9
+Predicted label: 3
+WALKING ----------- 1
+Predicted label: 1
+JUMPING ----------- 2
+Predicted label: 2
+STNDING ----------- 3
+Predicted label: 4
+TRNSACC ----------- 9
+Predicted label: 3
+WALKING ----------- 1
+Predicted label: 1
+TRNSACC ----------- 9
+Predicted label: 1
+RUNNING ----------- 0
+Predicted label: 0
+JUMPING ----------- 2
+Predicted label: 0
+STNDING ----------- 3
+Predicted label: 1
+TRNSACC ----------- 9
+Predicted label: 1
+WALKING ----------- 1
+Predicted label: 3
+STNDING ----------- 3
+Predicted label: 3
+TRNSACC ----------- 9
+Predicted label: 4
+WALKING ----------- 1
+Predicted label: 4
+FALLING ----------- 6
+Predicted label: 7
+XLYINGX ----------- 5
+Predicted label: 7
+TRANSUP ----------- 7
+Predicted label: 7
+STNDING ----------- 3
+Predicted label: 7
+TRANSDW ----------- 8
+Predicted label: 3
+SITTING ----------- 4
+Predicted label: 3
+TRANSUP ----------- 7
+Predicted label: 3
+STNDING ----------- 3
+Predicted label: 3
+TRNSACC ----------- 9
+Predicted label: 3
+WALKING ----------- 1
+Predicted label: 1
+JUMPING ----------- 2
+Predicted label: 1
+STNDING ----------- 3
+Predicted label: 3
+TRNSACC ----------- 9
+Predicted label: 3
+WALKING ----------- 1
+Predicted label: 1
+TRNSACC ----------- 9
+Predicted label: 1
+RUNNING ----------- 0
+Predicted label: 0
+JUMPING ----------- 2
+Predicted label: 0
+STNDING ----------- 3
+Predicted label: 3
+TRNSACC ----------- 9
+Predicted label: 1
+WALKING ----------- 1
+Predicted label: 1
+FALLING ----------- 6
+Predicted label: 2
+XLYINGX ----------- 5
+Predicted label: 4
+TRANSUP ----------- 7
+Predicted label: 5
+STNDING ----------- 3
+Predicted label: 1
+Number of windows: 11417
+Total predictions: 10543
+Prediction accuracy: 0.7588921559328464
+
+(base) C:\motion-detection>

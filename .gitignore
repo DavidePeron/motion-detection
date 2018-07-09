@@ -1,6 +1,5 @@
 *.mat
 ARSDLRDataSet/
-*.pdf
 *.h5
 *.pyc
 *.blg

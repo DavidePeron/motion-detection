@@ -4,15 +4,21 @@
 \label{sec:processing_architecture}
 The project can be divided in 3 parts: the dataset creation, the neural network creation and the real time prediction.
 In order to make an action recognition model it was firstly created a proper dataset. All the signals were divided in several overlapping windows and were thrown into a \gls{cnn} made up with 1D convolutional layers and fully connected layers.
-When the \gls{nn} was trained and tested, a new dataset was used in order to verify the effective robustness and generalization of the model. 
-\MC{- DRAW A DIAGRAM OF THE PIPELINE}
+When the \gls{nn} was trained and tested, a new dataset was used in order to verify the effective robustness and generalization of the model.
+The main steps of the processing pipeline are reported in \fig{fig:processing_pipeline}.
+
+\begin{figure}[htp]
+\includegraphics[width=\linewidth]{processing_pipeline}
+\caption{Scheme of processing pipeline, $r$ is the raw signal given in input to the preprocessing part, $y$ is the label predicted by the prediction algorithm}
+\label{fig:processing_pipeline}
+\end{figure}
 
 
 \section{Signals and Dataset}
 \label{sec:model}
 
 \subsection{Measurement setup}
-The signals the authors have worked on were provided by DLR official website \cite{DLR}. We took into considerations two of the three published Matlab datasets: \textit{ARS\_DLR\_Data\_Set\_V2.mat} and \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}. 
+The signals the authors have worked on were provided by DLR official website \cite{DLR}. We took into considerations two of the three published Matlab datasets: \textit{ARS\_DLR\_Data\_Set\_V2.mat} and \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}.
 Both of them are made up of signals recovered by a \gls{mems} based \gls{imu} (an Xsens MTx-28A53G25) composed by an accelerometer, a gyroscope and a magnetometer. These measurements systems provide informations about the inertial acceleration, the angular velocity and the magnetic field direction.
 At the experiment joined fourteen people and the \gls{imu}, that was positioned over the pelvic region of each one (\fig{fig:IMU}), recovered signals during some ordinary motion activities like \textit{standing}, \textit{sitting}, \textit{running}, \textit{jumping}, \textit{lying} and all the transitional phases from an activity to another.
 
@@ -36,7 +42,7 @@ Both datasets are divided in activity sessions, 34 in \textit{ARS\_DLR\_Data\_Se
 	'RUNNING' & $0$ & running \\
 	'WALKING' & $1$ & walking \\
 	'JUMPING' & $2$ & jumping  \\
-	'STNDING' & $3$ & standing \\ 
+	'STNDING' & $3$ & standing \\
 	'SITTING' & $4$ & sitting\\
 	'XLYINGX' & $5$ & lying \\
 	'FALLING' & $6$ & falling \\
@@ -53,7 +59,7 @@ Both datasets are divided in activity sessions, 34 in \textit{ARS\_DLR\_Data\_Se
 
 
 \subsection{Signal pre-processing}
-The first pre-processing applied to the dataset consisted in representing the signals according to the global frame using the rotation matrix \MC{should I say more?}. The dataset considered already contains pre-processed data, sampled with T = 0.01 s. 
+The first pre-processing applied to the dataset consisted in representing the signals according to the global frame using the rotation matrix \MC{should I say more?}. The dataset considered already contains pre-processed data, sampled with T = 0.01 s.
 
 In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of Susanna activity sessions. These figures represent the norm (see \eq{eq:norm}) of accelerometer, gyroscope and magnetometer over the three global coordinates instead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm. In particular in \fig{fig:acc} the shift of the acceleration mean around 9.8 m/s is noticeable, value coherent with the gravitational constant value \textit{g}.
 
@@ -89,15 +95,15 @@ It also emerges in each of these figures how the transitory activities from stan
 \end{figure}
 
 
-Another sort of pre-processing was made in order to fix the activity indexing of some recordings. It frequently happened to find that, considering two adjacent motion activities, the end of the previous activity and the beginning of the succeeding one were not temporarily neighboring. It happened also to find two activities temporarily overlapping: the end of the previous activity was indexed after the beginning of the second one. 
+Another sort of pre-processing was made in order to fix the activity indexing of some recordings. It frequently happened to find that, considering two adjacent motion activities, the end of the previous activity and the beginning of the succeeding one were not temporarily neighboring. It happened also to find two activities temporarily overlapping: the end of the previous activity was indexed after the beginning of the second one.
 The authors resolved the problem removing the non indexed data and the data whose label was uncertain so as to not train the \gls{nn} with wrongly labeled data.
 
 Each session is finally represented by a long and straight matrix with nine columns (three for each measurement system) and a number of rows equals to the session duration. Due to the straight sampling time the number of rows stands at around $10^3$-$10^4$ order of magnitude. Even if motion signals are not two dimensional signals, the peculiarity of input shape makes it suitable to be treated as a kind of image. Therefore according to the adopted strategy of \textit{Gadaleta et al.}, the dataset was processed in order to be fit into a \gls{cnn} \cite{Gadaleta-2018}.
 
 
-Since the \gls{cnn} needs a fixed input the authors decided to divide in patterns each session matrix and associate to them the corresponding label. The pattern length was decided equal to 27, that is the shortest activity length in the whole dataset. 
+Since the \gls{cnn} needs a fixed input the authors decided to divide in patterns each session matrix and associate to them the corresponding label. The pattern length was decided equal to 27, that is the shortest activity length in the whole dataset.
 
-Then it was taken every activity and it was divided in overlapping windows with stride equals to 3. The obtained final dataset was made by several windows associated to a specific activity. No transitional pattern from an activity to another were taken. 
+Then it was taken every activity and it was divided in overlapping windows with stride equals to 3. The obtained final dataset was made by several windows associated to a specific activity. No transitional pattern from an activity to another were taken.
 
 
 The last procedure attuated was a shuffle of the dataset.
@@ -114,14 +120,14 @@ The last procedure attuated was a shuffle of the dataset.
 \label{fig:CNN}
 \end{figure}
 
-The \gls{cnn} architecture is schematically presented in \fig{fig:CNN} and in this section is going to be explained in details using the showed labeling of the layers. 
+The \gls{cnn} architecture is schematically presented in \fig{fig:CNN} and in this section is going to be explained in details using the showed labeling of the layers.
 Because of the fixed input shape of the \gls{cnn}, the dataset is composed by 322502 patterns with shape (27,9) and it was divided in two subsets\MC{according to a common Machine Learning working iter(?)}: the \textit{training set} that is constituted by the 80\% of the whole patterns, the remaining part forms the \textit{validation set}.
 
-Due to the restrictive number of columns it was decided to learn the feature for each column separately in the convolutional layers, it was used infact 1D-\glspl{cnn}, and then classify the whole pattern in the succeeding fully connected layers. 
+Due to the restrictive number of columns it was decided to learn the feature for each column separately in the convolutional layers, it was used infact 1D-\glspl{cnn}, and then classify the whole pattern in the succeeding fully connected layers.
 
-The choosed \gls{cnn} architecture presents first of all Zero Padding at the first and last 2 rows of each pattern so the shape of the dataset pattern began (31,9). 
+The choosed \gls{cnn} architecture presents first of all Zero Padding at the first and last 2 rows of each pattern so the shape of the dataset pattern began (31,9).
 
-The first 1D convolutional layer Conv1 returns 64 filters of shape (27,9) and Conv2 returns the same number fo filters with a shape of (23,9). The kernel used in these two first layers has (5,1) shape and a stride of (1,1). 
+The first 1D convolutional layer Conv1 returns 64 filters of shape (27,9) and Conv2 returns the same number fo filters with a shape of (23,9). The kernel used in these two first layers has (5,1) shape and a stride of (1,1).
 Conv3 and Conv4 present a kernel of size (3,1) and a stride of (1,1) instead, the outputs are both 32 filters of respecively (21,9) and (19,9) shape.
 \tab{tab:filtersize} shows how the filters size of each convolutional layer can be mathematically calculated. After each convolutional layer was added a Batch Normalization and a "ReLu" Activation Function.
 
@@ -137,7 +143,7 @@ After this feature learning block follows a classification part made of three fu
 
 
 
-The \gls{nn} was trained for 10 epochs with a batch size of 128. The optimizer used was \textit{Adam}. Due to the 
+The \gls{nn} was trained for 10 epochs with a batch size of 128. The optimizer used was \textit{Adam}. Due to the
 
 
 
@@ -152,11 +158,9 @@ The \gls{nn} was trained for 10 epochs with a batch size of 128. The optimizer u
 	CONV1 & $31$ & $5$ & $1$ & $(31-5)/1+1 = 27$\\
 	CONV2 & $27$ & $5$ & $1$ & $(27-5)/1+1 = 23$\\
 	CONV3 & $27$ & $3$ & $1$ & $(23-3)/1+1 = 21$\\
-	CONV4 & $21$ & $3$ & $1$ & $(21-3)/1+1 = 19$\\ 
+	CONV4 & $21$ & $3$ & $1$ & $(21-3)/1+1 = 19$\\
 	\bottomrule
 	\end{tabular}
 	\caption{Filters dimension along the pattern columns. N is the number of rows of the input pattern. K is the dimension of the kernel. S is the stride dimension.}
 	\label{tab:filtersize}
 \end{table}
-
-

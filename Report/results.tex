@@ -3,11 +3,27 @@
 \section{Results}
 \label{sec:results}
 
+The \gls{ars} previously described has been tried on a PC with an Intel Core i7-7700HQ microprocessor at 3.8 GHz, 8 GB of RAM, and an NVIDIA Ge-Force GTX 1050 as Graphic Card. The programming language used was Python with Keras and TensorFlow as learning framework. The most computational demanding operations was performed on the GPU using CUDA drivers.
+The learning part has been tried also performing all the computations on the CPU, the difference in time is dramatically: using the GPU each epoch takes about 26 seconds while using only CPU takes more than 2 minutes.
 
+In the learning phase, the training accuracy reaches $93.75\%$ while in the test dataset, activities are recognized the $94.6\%$ of the times.
 
-\MC{HERE I'D PUT SOME PROCESSOR CHARACTERISICS}
+Once the model has been learned, the \gls{cnn} is used to predict activities in real time. To assess the performance of this task, a set of predictions has been made on a raw signal recorded by the same sensor. The overall recognition rate of the real time prediction is $75.88\%$, precision and recall are showed in \fig{fig:precision} and \fig{fig:recall}.
 
+The accuracy in the prediction phase is quite low, since the dataset used was too small and had a great variance within the data. Moreover in that dataset some labels were missing.
 
-\MR{In this section, you should provide the numerical results. You are free to decide the structure of this section. As general rules of thumb, use plots to describe your results, showing, e.g., precision, recall and \mbox{F-measure} as a function of the system (learning) parameters. Present the material in a progressive and logical manner, starting with simple things and adding details and explaining more complex behaviors as you go. Also, do not try to explain / show multiple concepts at a time. Try to address one concept at a time, explain it properly, move to the next one.\\
-The best results are obtained by generating the graphs in either \texttt{encapsulated postscript (eps)} or \texttt{pdf} formats. To plot your figures, use the \texttt{includegraphics} command.}
+As can be seen the accuracy is very good for longer or easy-to-recognize activities like \textit{Running}, \textit{Walking}, \textit{Standing} and \textit{Lying}, while is lower for shorter activities or activities that suffer of a big variance such as \textit{Falling} and \textit{Setting}.
 
+In ~\cite{Korbinian} precision and recall are plotted only for the main activities, they don't take into account the transition activities (\textit{Up}, \textit{Down}, \textit{Ascending}, \textit{Descending}). These gives a low accuracy since there are less sample in the dataset and since they can have an high variance.
+
+\begin{figure}
+\includegraphics[scale=0.55]{precision.pdf}
+\caption{Precision calculated for each activity to recognize}
+\label{fig:precision}
+\end{figure}
+
+\begin{figure}
+\includegraphics[scale=0.55]{recall.pdf}
+\caption{Recall calculated for each activity to recognize}
+\label{fig:recall}
+\end{figure}

@@ -10,6 +10,7 @@ from keras.preprocessing import image
 from keras.utils import layer_utils
 from keras.utils.data_utils import get_file
 from keras.applications.imagenet_utils import preprocess_input
+from sklearn.utils import class_weight
 from utility import *
 
 
@@ -94,7 +95,9 @@ activity_recognizer.compile(optimizer = "adam", loss = "categorical_crossentropy
 #activity_recognizer = load_model('trial7.h5')
 
 # TRAIN THE MODEL
-activity_recognizer.fit(x = X_train, y = Y_train, validation_split=0.2, epochs = 10, batch_size = 128) #verbose = 0,
+labels = np.argmax(Y_train, axis=1)
+class_weights = class_weight.compute_class_weight('balanced', np.unique(labels), labels)
+activity_recognizer.fit(x = X_train, y = Y_train, validation_split=0.2, epochs = 10, batch_size = 128, class_weight=class_weights) #verbose = 0,
 
 # TEST THE MODEL
 loss, acc = activity_recognizer.evaluate(x = X_test, y = Y_test)

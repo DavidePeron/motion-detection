@@ -3,6 +3,25 @@
 \section{Related Work}
 \label{sec:related_work}
 
+Activity recognition is a field evolving for more than twenty years, it started from very simple motion recognition and it gets more complex over the years.
+As just said, the classical approach to this problem is with a feature extraction techniques.
+In these solutions, ad-hoc features are extracted from the dataset, reducing the dimension of each signals from the recorded sample to a feature vector.
+In this way features can be classified using several classifiers to obtain an accurate prediction.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\linewidth]{feature_extraction}
+  \label{fig:feature_extraction}
+  \caption{Processing pipeline for feature extraction techniques}
+\end{figure}
+
+The main processing pipeline used from these solutions is reported in \fig{fig:feature_extraction}.
+The most used classifiers for feature extraction are Decision Trees, \gls{svm}, K-nearest neighbors and Naive Bayes although a lot of different classifiers can be used ~\cite{Ravi05}.
+The problem of this technique is the strong data dependence even if it gets a good accuracy.
+
+To overcome this lack of the classical \gls{ars}, deep learning is used in several ways.
+In ~\cite{Chikhaoui17} the authors perform a matrix factorization for dimensionality reduction and deep learning algorithm to automatically learn suitable features.
+
 \MR{The goal of this section is to describe what has been done so far in {\it the} literature. You should focus on and briefly describe the work done in the best papers that you have read. For each you should comment on the paper's contribution, on the good and important findings of such paper and also, 1) on why these findings are not enough and 2) how these findings are improved upon / extended by the work that you do here. At the end of the section, you recap the main paper contributions (one or two, the most important ones) and how these extend / improve upon previous work. If possible, I would make this section no longer than one page, this leads to an overall {\it two pages} including abstract, introduction and related work. I believe this is a fair amount of space in most cases.}\\
 \begin{itemize}
 \item \MR{\textbf{References:} please follow this {\it religiously}. It will help you a lot. Use {\it bibtex} as the tool to manage the bibliography. A bibtex example file, maned {\tt biblio.bib} is also provided with this package.}

@@ -60,15 +60,15 @@ The first pre-processing applied to the dataset consisted in representing the si
 
 
 The dataset considered already contains pre-processed data, sampled with T = 0.01 s. In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of the Susanna activity sessions. These figures represent the norm (see \eq{eq:norm}) of accelerometer, gyroscope and magnetometer over the three global coordinates instead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm. 
-From these figures emerges that the mean of angular velocity and the magnetic field swings around zero, on the other hand the acceleration mean shifts near 9.8 m/s according to the gravitational constant value \textit{g}.
+\MC{From these figures emerges that the mean of angular velocity and the magnetic field swings around zero, on the other hand the acceleration mean shifts near 9.8 m/s according to the gravitational constant value \textit{g}---IT'S WRONG! SEE MAGNETIC FIELD MAGNITUDE}.
+
 
 \begin{equation}
 |s| = \sqrt{s_x^2+s_y^2+s_z^2}
+\label{eq:norm}
 \end{equation}
 %\caption{Norm of s, s can be one of acceleration, angular velocity or mangnetometer}
-\label{eq:norm}
 \MC{problems with caption in the norm equation}
-
 
 
 It also emerges in each of these figures how the transitory activities from standing to sitting and vice versa can be observable due to the drastic change of the signals.
@@ -93,7 +93,7 @@ It also emerges in each of these figures how the transitory activities from stan
 
 
 Another sort of pre-processing was made in order to fix the activity indexing of some recordings. It frequently happened to find that, considering two adjacent motion activities, the end of the previous activity and the beginning of the succeeding one were not temporarily neighboring. It happened also to find two activities temporarily overlapping: the end of the previous activity was indexed after the beginning of the second one. 
-The authors resolved the problem removing the non indexed data and the data whose label was uncertain so as to not train the \gls{ann} with wrongly labeled data.
+The authors resolved the problem removing the non indexed data and the data whose label was uncertain so as to not train the \gls{nn} with wrongly labeled data.
 
 Each session is finally represented by a long and straight matrix with nine columns (three for each measurement system) and a number of rows equals to the session duration. Due to the straight sampling time the number of rows stands at around \MR{MILLE!!(find that number)} order of magnitude. Even if motion signals are not two dimensional signals, the peculiarity of input shape makes it suitable to be treated as a kind of image. Therefore according to the adopted strategy of \textit{Gadaleta et al.}, the dataset was processed in order to be fit into a \gls{cnn} \cite{Gadaleta-2018}.
 
@@ -109,28 +109,58 @@ Then
 -transitional pattern are not token\\
 -TRANST label is counted in README but no transit pattern appear in the dataset\\
 -TRANSIT data in the dataset->yes or no\\
+-I have to say that i made a shuffle of the dataset
 }
 
 
 \section{Learning Framework}
 \label{sec:learning_framework}
 
-\MR{Here you finally describe the learning strategy / algorithm that you conceived and used to solve the problem at stake. A good diagram to exemplify how learning is carried out is often very useful. In this section, you should describe the learning model, its parameters, any optimization over a given parameter set, etc. You can organize this section in \mbox{sub-sections}. You are free to choose the most appropriate structure.}
-
 \begin{figure}[htp]
-\includegraphics[scale=1.7]{CNN_arch.eps}
+\includegraphics[scale=1.75]{CNN_arch.eps}
 \caption{\gls{cnn} architecture}
 \label{fig:CNN}
 \end{figure}
 
-\MC{here i'd put the processor chaaracteristics}
+\MC{HERE I'D PUT SOME PROCESSOR CHARACTERISICS}
 
 
 The \gls{cnn} architecture is schematically presented in \fig{fig:CNN} and in this section is going to be explained in details using the showed labeling of the layers. 
-Because of the imposed fixed input shape of the \gls{cnn}, the dataset is composed by \MR{MILLE!!!} patterns with shape (27,9) that have been elaborated with a batch of \MR{MILLE!!!}.
-   
+Because of the fixed input shape of the \gls{cnn}, the dataset is composed by \MR{MILLE!!!} patterns with shape (27,9) and it was divided in two subsets\MC{according to a common Machine Learning working iter(?)}: the \textit{training set} that is constituted by the 80\% of the whole patterns, the remaining part forms the \textit{training set}.
 
-After the 4 banchs of convolutional layers the filters are extracted
+Due to the restrictive number of columns it was decided to elaborate each column separately in the convolutional layers, it was used infact 1D-\glspl{cnn}, and then classified the whole pattern in the succeeding fully connected layers. 
+
+The choosed \gls{cnn} architecture presents first of all Zero Padding at the first and last 2 rows of each pattern so the shape of the dataset pattern began (31,9). 
+
+The first 1D convolutional layer Conv1 returns 64 filters of shape (27,9) and Conv2 returns the same number fo filters with a shape of (23,9). The kernel used in these two first layers has (5,1) shape and a stride of (1,1). 
+Conv3 and Conv4 present a kernel of size (3,1) and a stride of (1,1) instead, the outputs are both 32 filters of respecively (21,9) and (19,9) shape.
+\tab{tab:filtersize} shows how the filters size of each convolutional layer has been calculated. The used formula is taken from \MC{I DON'T KNOW WHERE TO FIND THE FORMULA; CAN I CITE ROSSI SLIDES?}
+After each convolutional layer was added a Batch Normalization and a "ReLu" Activation Function.
+
+
+
+\begin{table}[htp]
+\small
+	\centering
+		\renewcommand{\arraystretch}{1}% Tighter
+	\begin{tabular}{@{}lllll@{}}
+	\toprule
+	LAYER & N & K & S & OUTPUT\\
+	\midrule
+	CONV1 & $31$ & $5$ & $1$ & $(31-5)/1+1 = 27$\\
+	CONV2 & $27$ & $5$ & $1$ & $(27-5)/1+1 = 23$\\
+	CONV3 & $27$ & $3$ & $1$ & $(23-3)/1+1 = 21$\\
+	CONV4 & $21$ & $3$ & $1$ & $(21-3)/1+1 = 19$\\ 
+	\bottomrule
+	\end{tabular}
+	\caption{Filters dimension along the pattern columns. N is the number of rows of the input pattern. K is the dimension of the kernel. S is the stride dimension. The output size of the pattern rows is calculated by \MC{I DON'T FIND THE FORMULA}}
+	\label{tab:filtersize}
+\end{table}
+
+
+ that have been elaborated with a batch of \MR{MILLE!!!}. 
+
+
 
 At the end the output layer presents a number of elements equal to the number of the activity labels considered.
 

@@ -26,7 +26,7 @@ def ActivityRecognizer(input_shape):
 
 	X = ZeroPadding1D(2)(X_input)
 
-	X = Conv1D(64, 5, strides = 1)(X_input)
+	X = Conv1D(64, 5, strides = 1)(X)
 	X = BatchNormalization(axis = 1)(X)
 	X = Activation('relu')(X)
 	X = Dropout(0.15)(X)

@@ -17,10 +17,19 @@ In this way features can be classified using several classifiers to obtain an ac
 
 The main processing pipeline used from these solutions is reported in \fig{fig:feature_extraction}.
 The most used classifiers for feature extraction are Decision Trees, \gls{svm}, K-nearest neighbors and Naive Bayes although a lot of different classifiers can be used ~\cite{Ravi05}.
+Features can be extracted either from a single sensor or from a large set of sensors, the first solution suffers an high computational complexity while the second is computational easier but certainly less  portable and can create issues due to redundancy of the information.
+In ~\cite{Laerhoven02} they collect data from 30 sensors positioned around the body and they classify features extracted from these data with a clustering algorithm. They chose to collect all the data in a central processing unit to perform a centralized classification. This approach suffers however an high cost and an high complexity to limit redundancy in the data.
+
 The problem of this technique is the strong data dependence even if it gets a good accuracy.
 
 To overcome this lack of the classical \gls{ars}, deep learning is used in several ways.
 In ~\cite{Chikhaoui17} the authors perform a matrix factorization for dimensionality reduction and deep learning algorithm to automatically learn suitable features.
+In this work, they reduce the dimension of the dataset using matrix factorization and they elaborate the results in a Neural Network. The output of the \gls{nn} is a feature vector. Finally the activity is predicted classifying the feature vector with a Softmax classifier.
+The accuracy is quite good since they avoid hand-crafted features, but they still rely on features extracted from data.
+
+The key to implement an adaptable and reliable algorithm to classify human activities is the use of deep learning without extracting features at all.
+A comparison between three different deep learning algorithms is made in ~\cite{Xu2017}. They collected data from one single sensor and they predicted activities using \gls{dt}, \gls{ann} and \gls{rf}. They stated that \gls{rf} performs better than the other two, with an accuracy between $75 \%$ and $90 \%$ depending on the activity.
+
 
 \MR{The goal of this section is to describe what has been done so far in {\it the} literature. You should focus on and briefly describe the work done in the best papers that you have read. For each you should comment on the paper's contribution, on the good and important findings of such paper and also, 1) on why these findings are not enough and 2) how these findings are improved upon / extended by the work that you do here. At the end of the section, you recap the main paper contributions (one or two, the most important ones) and how these extend / improve upon previous work. If possible, I would make this section no longer than one page, this leads to an overall {\it two pages} including abstract, introduction and related work. I believe this is a fair amount of space in most cases.}\\
 \begin{itemize}

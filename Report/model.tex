@@ -2,13 +2,11 @@
 
 \section{Processing Pipeline}
 \label{sec:processing_architecture}
-The project can be divided in 3 parts: the dataset creation, the neural network creation and the benchmark prediction.
-In order to make an action recognition model it was firstly created a proper dataset. All the signals were divided in several overlapping windows and were thrown into a \gls{cnn} made up with convolutional layers and fully connected layers.
-When the neural network was trained and validated, 
+The project can be divided in 3 parts: the dataset creation, the neural network creation and the real time prediction.
+In order to make an action recognition model it was firstly created a proper dataset. All the signals were divided in several overlapping windows and were thrown into a \gls{cnn} made up with 1D convolutional layers and fully connected layers.
+When the \gls{nn} was trained and tested, a new dataset was used in order to verify the effective robustness and generalization of the model. 
+\MC{- DRAW A DIAGRAM OF THE PIPELINE}
 
-\MC{(SISTEMA)
-- DRAW A DIAGRAM OF THE PIPELINE
-- DESCRIPTION OF THE GENERAL APPROACH}
 
 \section{Signals and Dataset}
 \label{sec:model}
@@ -57,9 +55,11 @@ Both datasets are divided in activity sessions, 34 in \textit{ARS\_DLR\_Data\_Se
 \subsection{Signal pre-processing}
 The first pre-processing applied to the dataset consisted in representing the signals according to the global frame using the rotation matrix \MC{should I say more?}. The dataset considered already contains pre-processed data, sampled with T = 0.01 s. 
 
-In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of the Susanna activity sessions. These figures represent the norm (see \eq{eq:norm}) of accelerometer, gyroscope and magnetometer over the three global coordinates instead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm. 
-\MC{From these figures emerges that the mean of angular velocity and the magnetic field swings around zero, on the other hand the acceleration mean shifts near 9.8 m/s according to the gravitational constant value \textit{g}---IT'S WRONG! SEE MAGNETIC FIELD MAGNITUDE}.
+In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of Susanna activity sessions. These figures represent the norm (see \eq{eq:norm}) of accelerometer, gyroscope and magnetometer over the three global coordinates instead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm. In particular in \fig{fig:acc} the shift of the acceleration mean around 9.8 m/s is noticeable, value coherent with the gravitational constant value \textit{g}.
 
+It also emerges in each of these figures how the transitory activities from standing to sitting and vice versa can be observable due to the drastic change of the signals.
+
+\MC{ADD LABELS ON SUSANNA FIGURES!!!}
 
 \begin{equation}
 |s| = \sqrt{s_x^2+s_y^2+s_z^2}
@@ -69,7 +69,6 @@ In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of the Susanna a
 \MC{problems with caption in the norm equation}
 
 
-It also emerges in each of these figures how the transitory activities from standing to sitting and vice versa can be observable due to the drastic change of the signals.
 
 \begin{figure}[htp]
 \includegraphics[scale=0.55]{acceleration_susanna.pdf}
@@ -115,11 +114,8 @@ The last procedure attuated was a shuffle of the dataset.
 \label{fig:CNN}
 \end{figure}
 
-\MC{HERE I'D PUT SOME PROCESSOR CHARACTERISICS}
-
-
 The \gls{cnn} architecture is schematically presented in \fig{fig:CNN} and in this section is going to be explained in details using the showed labeling of the layers. 
-Because of the fixed input shape of the \gls{cnn}, the dataset is composed by 322502 patterns with shape (27,9) and it was divided in two subsets\MC{according to a common Machine Learning working iter(?)}: the \textit{training set} that is constituted by the 80\% of the whole patterns (258002), the remaining part forms the \textit{validation set}.
+Because of the fixed input shape of the \gls{cnn}, the dataset is composed by 322502 patterns with shape (27,9) and it was divided in two subsets\MC{according to a common Machine Learning working iter(?)}: the \textit{training set} that is constituted by the 80\% of the whole patterns, the remaining part forms the \textit{validation set}.
 
 Due to the restrictive number of columns it was decided to learn the feature for each column separately in the convolutional layers, it was used infact 1D-\glspl{cnn}, and then classify the whole pattern in the succeeding fully connected layers. 
 
@@ -140,6 +136,11 @@ After this feature learning block follows a classification part made of three fu
 
 
 
+
+The \gls{nn} was trained for 10 epochs with a batch size of 128. The optimizer used was \textit{Adam}. Due to the 
+
+
+
 \begin{table}[htp]
 \small
 	\centering
@@ -157,15 +158,5 @@ After this feature learning block follows a classification part made of three fu
 	\caption{Filters dimension along the pattern columns. N is the number of rows of the input pattern. K is the dimension of the kernel. S is the stride dimension.}
 	\label{tab:filtersize}
 \end{table}
-
-
-
-
-\subsection{\gls{cnn} results}
-
-The \gls{nn} was trained for 10 epochs with a batch size of 128\MC{verifica!}
-
-
-
 
 

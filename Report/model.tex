@@ -61,20 +61,12 @@ Both datasets are divided in activity sessions, 34 in \textit{ARS\_DLR\_Data\_Se
 \subsection{Signal pre-processing}
 The first pre-processing applied to the dataset consisted in representing the signals according to the global frame using the rotation matrix \MC{should I say more?}. The dataset considered already contains pre-processed data, sampled with T = 0.01 s.
 
-In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of Susanna activity sessions. These figures represent the norm (see \eq{eq:norm}) of accelerometer, gyroscope and magnetometer over the three global coordinates instead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm. In particular in \fig{fig:acc} the shift of the acceleration mean around 9.8 m/s is noticeable, value coherent with the gravitational constant value \textit{g}.
+In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of Susanna activity sessions. These figures represent the norm of accelerometer, gyroscope and magnetometer over the three global coordinates instead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm. In particular in \fig{fig:acc} the shift of the acceleration mean around 9.8 m/s is noticeable, value coherent with the gravitational constant value \textit{g}. It also emerges in each of these figures how the transitory activities from standing to sitting and vice versa can be observable due to the drastic change of the signals.
 
-It also emerges in each of these figures how the transitory activities from standing to sitting and vice versa can be observable due to the drastic change of the signals.
+Another sort of pre-processing was made in order to fix the activity indexing of some recordings. It frequently happened to find that, considering two adjacent motion activities, the end of the previous activity and the beginning of the succeeding one were not temporarily neighboring. It happened also to find two activities temporarily overlapping: the end of the previous activity was indexed after the beginning of the second one. 
+The authors resolved the problem removing the non indexed data and the data whose label was uncertain so as to not train the \gls{nn} with wrongly labeled data.
 
 \MC{ADD LABELS ON SUSANNA FIGURES!!!}
-
-\begin{equation}
-|s| = \sqrt{s_x^2+s_y^2+s_z^2}
-\label{eq:norm}
-\end{equation}
-%\caption{Norm of s, s can be one of acceleration, angular velocity or mangnetometer}
-\MC{problems with caption in the norm equation}
-
-
 
 \begin{figure}[htp]
 \includegraphics[scale=0.55]{acceleration_susanna.pdf}
@@ -95,13 +87,17 @@ It also emerges in each of these figures how the transitory activities from stan
 \end{figure}
 
 
-Another sort of pre-processing was made in order to fix the activity indexing of some recordings. It frequently happened to find that, considering two adjacent motion activities, the end of the previous activity and the beginning of the succeeding one were not temporarily neighboring. It happened also to find two activities temporarily overlapping: the end of the previous activity was indexed after the beginning of the second one.
-The authors resolved the problem removing the non indexed data and the data whose label was uncertain so as to not train the \gls{nn} with wrongly labeled data.
-
-Each session is finally represented by a long and straight matrix with nine columns (three for each measurement system) and a number of rows equals to the session duration. Due to the straight sampling time the number of rows stands at around $10^3$-$10^4$ order of magnitude. Even if motion signals are not two dimensional signals, the peculiarity of input shape makes it suitable to be treated as a kind of image. Therefore according to the adopted strategy of \textit{Gadaleta et al.}, the dataset was processed in order to be fit into a \gls{cnn} \cite{Gadaleta-2018}.
+\subsection{Dataset creation}
 
 
-Since the \gls{cnn} needs a fixed input the authors decided to divide in patterns each session matrix and associate to them the corresponding label. The pattern length was decided equal to 27, that is the shortest activity length in the whole dataset.
+\MC{DATASET 1}
+
+Each session is finally represented as a long and straight matrix with nine columns (three for each measurement system) and a number of rows equals to the session duration. Due to the straight sampling time the number of rows stands at around $10^3$-$10^4$ order of magnitude.
+Even if motion signals are not two dimensional signals, the type of data the authors have worked on are properly matrices.
+%Even if motion signals are not two dimensional signals, the peculiarity of input shape makes it suitable to be treated as a kind of image with a shape of a vector with 9 channels. Therefore according to the adopted strategy of \textit{Gadaleta et al.}, the dataset was processed in order to be fit into a \gls{cnn} \cite{Gadaleta-2018}.
+
+
+Since the \gls{cnn} needs a fixed input the authors decided to divide in patterns each session matrix and associate to them the corresponding label. The pattern length was decided equal to 27, that is the shortest activity length in the whole dataset. 
 
 Then it was taken every activity and it was divided in overlapping windows with stride equals to 3. The obtained final dataset was made by several windows associated to a specific activity. No transitional pattern from an activity to another were taken.
 
@@ -109,43 +105,31 @@ Then it was taken every activity and it was divided in overlapping windows with 
 The last procedure attuated was a shuffle of the dataset.
 
 
-\section{Learning Framework}
-\label{sec:learning_framework}
+\MC{DATASET 2}
+\textit{ARS\_DLR\_Benchmark\_Data\_Set.mat} is composed by 3 activity sessions and it was used for real time prediction purposes. The authors segmented in 27 length patterns with a stride of 5 every session matrix.  
+
+
+
+
+\section{CNN Architecture}
+\label{sec:cnn_architecture}
 
 \subsection{\gls{cnn} architecture}
 
 \begin{figure}[htp]
-\includegraphics[scale=1.75]{CNN_arch.pdf}
-\caption{\gls{cnn} architecture}
+\includegraphics[scale=1.23]{CNN_arch.pdf}
+\caption{\gls{cnn} architecture for a single input. Only changing size operations are showed.}
 \label{fig:CNN}
 \end{figure}
 
-The \gls{cnn} architecture is schematically presented in \fig{fig:CNN} and in this section is going to be explained in details using the showed labeling of the layers.
-Because of the fixed input shape of the \gls{cnn}, the dataset is composed by 322502 patterns with shape (27,9) and it was divided in two subsets\MC{according to a common Machine Learning working iter(?)}: the \textit{training set} that is constituted by the 80\% of the whole patterns, the remaining part forms the \textit{validation set}.
 
-Due to the restrictive number of columns it was decided to learn the feature for each column separately in the convolutional layers, it was used infact 1D-\glspl{cnn}, and then classify the whole pattern in the succeeding fully connected layers.
+Because of the fixed input shape of the \gls{cnn}, the dataset \MC{which dataset?} is composed by 322502 patterns with shape (27,9) and it was divided in two subsets: the \textit{training set} that is constituted by the 80\% of the whole patterns, the remaining part forms the \textit{testing set}.
 
-The choosed \gls{cnn} architecture presents first of all Zero Padding at the first and last 2 rows of each pattern so the shape of the dataset pattern began (31,9).
+The \gls{cnn} architecture is schematically presented in \fig{fig:CNN} and in this section is going to be explained in details using the showed labeling of the layers. 
 
-The first 1D convolutional layer Conv1 returns 64 filters of shape (27,9) and Conv2 returns the same number fo filters with a shape of (23,9). The kernel used in these two first layers has (5,1) shape and a stride of (1,1).
-Conv3 and Conv4 present a kernel of size (3,1) and a stride of (1,1) instead, the outputs are both 32 filters of respecively (21,9) and (19,9) shape.
-\tab{tab:filtersize} shows how the filters size of each convolutional layer can be mathematically calculated. After each convolutional layer was added a Batch Normalization and a "ReLu" Activation Function.
+Even if we're working with matrices, we decided to treat the single input pattern as a vertical 27 size vector with 9 channels. Zero Padding was firstly applied at the first and last two rows of the input in order to initially train more the \gls{nn} in the borders.\MC{but is it really true?}
 
-After this feature learning block follows a classification part made of three fully connected layers:to allow this passage a flattening of Conv4 output filters in necessary (see Flatten layer in \fig{fig:CNN}). Then follows three fully connected layers of size respecively 256, 128 and 11. The last one is the output and presents a size equal to the number of the activity labels considered.
-
-\MC{Lastly were added also Dropout to make the \gls{nn} not to learn too specificatamente /to memorize the training dataset}
-
-\MC{model.optimizer missing}
-
-
-\MC{The \gls{nn} was not trained with transitional patterns.}
-
-
-
-
-The \gls{nn} was trained for 10 epochs with a batch size of 128. The optimizer used was \textit{Adam}. Due to the
-
-
+Then four 1D convolutional layers were applied: the changing dimension of a single pattern is shown in \fig{fig:CNN}, the row size is calculated in \tab{tab:filtersize}
 
 \begin{table}[htp]
 \small
@@ -164,3 +148,15 @@ The \gls{nn} was trained for 10 epochs with a batch size of 128. The optimizer u
 	\caption{Filters dimension along the pattern columns. N is the number of rows of the input pattern. K is the dimension of the kernel. S is the stride dimension.}
 	\label{tab:filtersize}
 \end{table}
+
+After each convolutional layer is applied a Batch Normalization and a \textit{ReLu} Activation Function.
+
+After this feature learning block follows a classification part made of three fully connected layers:to allow this passage a flattening of Conv4 output filters in necessary (see Flatten layer in \fig{fig:CNN}). Then follows three fully connected layers of size respecively 256, 128 and 11 with a \textit{ReLu} activation function exept except the last one that has a \textit{softmax} function. The last one is the output, each of its 11 elements contains the probability of a label to be the most likely. \textit{Softmax} functions needs to find the label that has the higher probability. Because the \gls{nn} aims to get a classification of more than two labels the loss function used was \textit{categorical crossentropy}.
+
+In order to get a better generalization of the model Dropout layers were added, in particular the authors decided to adopt a dropout of p = 0.15 after Conv1, Conv2 and Conv3, p = 0.25 before Flatten and p = 0.5 after Dense1 and Dense2. This choice was made according to the most commonly used \gls{cnn} configuration proposed by Hinton (p = 0.5 on each fully connected layer) and a more singular configuration proposed by  (p = 0.1-0.2 between the convolutional layers)~\cite{Hinton12}~\cite{Sungheon17}.
+The textit{training set} was trained for 10 epochs with a batch size of 128 and the optimizer used was \textit{adam}. 
+
+
+
+
+

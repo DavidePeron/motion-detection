@@ -2,9 +2,11 @@
 
 \section{Processing Pipeline}
 \label{sec:processing_architecture}
-The project can be divided in 3 parts: the dataset creation, the neural network creation and the real time prediction.
-In order to make an action recognition model it was firstly created a proper dataset. All the signals were divided in several overlapping windows and were thrown into a \gls{cnn} made up with 1D convolutional layers and fully connected layers.
-When the \gls{nn} was trained and tested, a new dataset was used in order to verify the effective robustness and generalization of the model.
+The work can be divided in 3 parts: the dataset creation, the neural network creation and the real time prediction.
+In order to build and \gls{ars}, a proper dataset was firstly created. All the signals have been divided in several overlapping windows of the same dimension, each window corresponds to a specific activity. The set of windows and the correspondent activity labels created are then divided in training set and test set to learn and assess the prediction model.
+The training set is used to fed a \gls{cnn} made by 1D convolutional layers and fully connected layers while the test set is used to assess the accuracy of the learned model and to avoid overfitting problems.
+
+When the \gls{nn} is trained and tested, a new dataset is used in order to verify the effective robustness and generalization of the model in a real time application.
 The main steps of the processing pipeline are reported in \fig{fig:processing_pipeline}.
 
 \begin{figure}[htp]
@@ -63,7 +65,7 @@ The first pre-processing applied to the dataset consisted in representing the si
 
 In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of Susanna activity sessions. These figures represent the norm of accelerometer, gyroscope and magnetometer over the three global coordinates instead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm. In particular in \fig{fig:acc} the shift of the acceleration mean around 9.8 m/s is noticeable, value coherent with the gravitational constant value \textit{g}. It also emerges in each of these figures how the transitory activities from standing to sitting and vice versa can be observable due to the drastic change of the signals.
 
-Another sort of pre-processing was made in order to fix the activity indexing of some recordings. It frequently happened to find that, considering two adjacent motion activities, the end of the previous activity and the beginning of the succeeding one were not temporarily neighboring. It happened also to find two activities temporarily overlapping: the end of the previous activity was indexed after the beginning of the second one. 
+Another sort of pre-processing was made in order to fix the activity indexing of some recordings. It frequently happened to find that, considering two adjacent motion activities, the end of the previous activity and the beginning of the succeeding one were not temporarily neighboring. It happened also to find two activities temporarily overlapping: the end of the previous activity was indexed after the beginning of the second one.
 The authors resolved the problem removing the non indexed data and the data whose label was uncertain so as to not train the \gls{nn} with wrongly labeled data.
 
 \MC{ADD LABELS ON SUSANNA FIGURES!!!}
@@ -97,7 +99,7 @@ Even if motion signals are not two dimensional signals, the type of data the aut
 %Even if motion signals are not two dimensional signals, the peculiarity of input shape makes it suitable to be treated as a kind of image with a shape of a vector with 9 channels. Therefore according to the adopted strategy of \textit{Gadaleta et al.}, the dataset was processed in order to be fit into a \gls{cnn} \cite{Gadaleta-2018}.
 
 
-Since the \gls{cnn} needs a fixed input the authors decided to divide in patterns each session matrix and associate to them the corresponding label. The pattern length was decided equal to 27, that is the shortest activity length in the whole dataset. 
+Since the \gls{cnn} needs a fixed input the authors decided to divide in patterns each session matrix and associate to them the corresponding label. The pattern length was decided equal to 27, that is the shortest activity length in the whole dataset.
 
 Then it was taken every activity and it was divided in overlapping windows with stride equals to 3. The obtained final dataset was made by several windows associated to a specific activity. No transitional pattern from an activity to another were taken.
 
@@ -106,7 +108,7 @@ The last procedure attuated was a shuffle of the dataset.
 
 
 \MC{DATASET 2}
-\textit{ARS\_DLR\_Benchmark\_Data\_Set.mat} is composed by 3 activity sessions and it was used for real time prediction purposes. The authors segmented in 27 length patterns with a stride of 5 every session matrix.  
+\textit{ARS\_DLR\_Benchmark\_Data\_Set.mat} is composed by 3 activity sessions and it was used for real time prediction purposes. The authors segmented in 27 length patterns with a stride of 5 every session matrix.
 
 
 
@@ -125,7 +127,7 @@ The last procedure attuated was a shuffle of the dataset.
 
 Because of the fixed input shape of the \gls{cnn}, the dataset \MC{which dataset?} is composed by 322502 patterns with shape (27,9) and it was divided in two subsets: the \textit{training set} that is constituted by the 80\% of the whole patterns, the remaining part forms the \textit{testing set}.
 
-The \gls{cnn} architecture is schematically presented in \fig{fig:CNN} and in this section is going to be explained in details using the showed labeling of the layers. 
+The \gls{cnn} architecture is schematically presented in \fig{fig:CNN} and in this section is going to be explained in details using the showed labeling of the layers.
 
 Even if we're working with matrices, we decided to treat the single input pattern as a vertical 27 size vector with 9 channels. Zero Padding was firstly applied at the first and last two rows of the input in order to take in account also the borders in the convolutional layers.
 
@@ -154,9 +156,4 @@ After each convolutional layer is applied a Batch Normalization and a \textit{Re
 After this feature learning block follows a classification part made of three fully connected layers:to allow this passage a flattening of Conv4 output filters in necessary (see Flatten layer in \fig{fig:CNN}). Then follows three fully connected layers of size respecively 256, 128 and 11 with a \textit{ReLu} activation function exept except the last one that has a \textit{softmax} function. The last one is the output, each of its 11 elements contains the probability of a label to be the most likely. \textit{Softmax} functions needs to find the label that has the higher probability. Because the \gls{nn} aims to get a classification of more than two labels the loss function used was \textit{categorical crossentropy}.
 
 In order to get a better generalization of the model Dropout layers were added, in particular the authors decided to adopt a dropout of p = 0.15 after Conv1, Conv2 and Conv3, p = 0.25 before Flatten and p = 0.5 after Dense1 and Dense2. This choice was made according to the most commonly used \gls{cnn} configuration proposed by Hinton (p = 0.5 on each fully connected layer) and a more singular configuration proposed by  (p = 0.1-0.2 between the convolutional layers)~\cite{Hinton12}~\cite{Sungheon17}.
-The textit{training set} was trained for 10 epochs with a batch size of 128 and the optimizer used was \textit{adam}. 
-
-
-
-
-
+The textit{training set} was trained for 10 epochs with a batch size of 128 and the optimizer used was \textit{adam}.

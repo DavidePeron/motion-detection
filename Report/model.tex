@@ -20,9 +20,9 @@ The main steps of the processing pipeline are reported in \fig{fig:processing_pi
 \label{sec:model}
 
 \subsection{Measurement setup}
-The signals the authors have worked on were provided by DLR official website \cite{DLR}. We took into considerations two of the three published Matlab datasets: \textit{ARS\_DLR\_Data\_Set\_V2.mat} and \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}.
-Both of them are made up of signals recovered by a \gls{mems} based \gls{imu} (an Xsens MTx-28A53G25) composed by an accelerometer, a gyroscope and a magnetometer. These measurements systems provide informations about the inertial acceleration, the angular velocity and the magnetic field direction.
-At the experiment joined fourteen people and the \gls{imu}, that was positioned over the pelvic region of each one (\fig{fig:IMU}), recovered signals during some ordinary motion activities like \textit{standing}, \textit{sitting}, \textit{running}, \textit{jumping}, \textit{lying} and all the transitional phases from an activity to another.
+The signals the authors have worked on were provided by \gls{dlr} official website \cite{DLR}. The work is based on the data collected in the datasets  \textit{ARS\_DLR\_Data\_Set\_V2.mat} and \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}.
+Both of them are made up of signals recovered by a \gls{mems} based \gls{imu} (an Xsens MTx-28A53G25) composed by a accelerometer, a gyroscope and a magnetometer. These measurement systems provide information about the inertial acceleration, the angular velocity and the magnetic field direction.
+Data are collected recording signals from 14 people while they perform some ordinary motion activities like \textit{standing}, \textit{sitting}, \textit{running}, \textit{jumping}, \textit{lying}. The motion sensor is positioned over the pelvic region of each subject (\fig{fig:IMU}).
 
 \begin{figure}[htp]
 \includegraphics[scale=1.2]{IMU_sensor.pdf}
@@ -30,9 +30,14 @@ At the experiment joined fourteen people and the \gls{imu}, that was positioned 
 \label{fig:IMU}
 \end{figure}
 
-The considered datasets are divided only because they have to be used in different ways, but they are going to be described in the same way according to their identity.
-
-Both datasets are divided in activity sessions, 34 in \textit{ARS\_DLR\_Data\_Set\_V2.mat} and 3 in \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}, each session is a structure in turn \MR{(a sua volta)} that contains: a matrix of 10 column in which the first column represents the time domain and the other ones represents the \gls{imu} records over the three sensor coordinate, a rotation matrix that has the same dimension of the first one that permits to turn to the global frame the first matrix, a vector that contains the activity labels performed during the session (see \tab{tab:label}) and lastly a vector that indicates when each activity starts and ends.
+Although the datasets are used in different ways and to comply two different tasks of the \gls{ars}, their structure is exactly the same since their are collected under the same conditions.
+Both datasets are divided in activity sessions, 34 in \textit{ARS\_DLR\_Data\_Set\_V2.mat} and 3 in \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}, each session contains the following field:
+\begin{itemize}
+\item a matrix of 10 columns in which the first column represents the time domain and the other ones represents the \gls{imu} records over the three sensor axis;
+\item a rotation matrix that has the same dimension of the first field and allows to represent the measurement values in the global frame;
+\item a vector that contains the activity labels performed during the session (see \tab{tab:label});
+\item a vector that indicates when each activity starts and ends.
+\end{itemize}
 
 \begin{table}[htp]
 \small
@@ -52,7 +57,6 @@ Both datasets are divided in activity sessions, 34 in \textit{ARS\_DLR\_Data\_Se
 	'TRANSDW' & $8$ & going down i.e.: from standing to sitting\\
 	'TRNSACC' & $9$ & accelerating\\
 	'TRNSDCC' & $10$ & deccelerating\\
-	%'TRANSIT' & $11$ & other transition or irrelevant information\\
 	\bottomrule
 	\end{tabular}
 	\caption{Activities took into consideration with the associated labels}
@@ -146,4 +150,4 @@ After each convolutional layer is applied a Batch Normalization and a \textit{Re
 After this feature learning block follows a classification part made of three fully connected layers:to allow this passage a flattening of Conv4 output filters in necessary (see Flatten layer in \fig{fig:CNN}). Then follows three fully connected layers of size respecively 256, 128 and 11 with a \textit{ReLu} activation function exept except the last one that has a \textit{softmax} function. The last one is the output, each of its 11 elements contains the probability of a label to be the most likely. \textit{Softmax} functions needs to find the label that has the higher probability. Because the \gls{nn} aims to get a classification of more than two labels the loss function used was \textit{categorical crossentropy}.
 
 In order to get a better generalization of the model Dropout layers were added, in particular the authors decided to adopt a dropout of p = 0.15 after Conv1, Conv2 and Conv3, p = 0.25 before Flatten and p = 0.5 after Dense1 and Dense2. This choice was made according to the most commonly used \gls{cnn} configuration proposed by Hinton (p = 0.5 on each fully connected layer) and a more singular configuration proposed by  (p = 0.1-0.2 between the convolutional layers)~\cite{Hinton12}~\cite{Sungheon17}.
-The \textit{training set} was trained for 10 epochs with a batch size of 128 and the optimizer used was \textit{adam}. 
+The \textit{training set} was trained for 10 epochs with a batch size of 128 and the optimizer used was \textit{adam}.

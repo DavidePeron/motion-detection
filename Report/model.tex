@@ -4,15 +4,21 @@
 \label{sec:processing_architecture}
 The project can be divided in 3 parts: the dataset creation, the neural network creation and the real time prediction.
 In order to make an action recognition model it was firstly created a proper dataset. All the signals were divided in several overlapping windows and were thrown into a \gls{cnn} made up with 1D convolutional layers and fully connected layers.
-When the \gls{nn} was trained and tested, a new dataset was used in order to verify the effective robustness and generalization of the model. 
-\MC{- DRAW A DIAGRAM OF THE PIPELINE}
+When the \gls{nn} was trained and tested, a new dataset was used in order to verify the effective robustness and generalization of the model.
+The main steps of the processing pipeline are reported in \fig{fig:processing_pipeline}.
+
+\begin{figure}[htp]
+\includegraphics[width=\linewidth]{processing_pipeline}
+\caption{Scheme of processing pipeline, $r$ is the raw signal given in input to the preprocessing part, $y$ is the label predicted by the prediction algorithm}
+\label{fig:processing_pipeline}
+\end{figure}
 
 
 \section{Signals and Dataset}
 \label{sec:model}
 
 \subsection{Measurement setup}
-The signals the authors have worked on were provided by DLR official website \cite{DLR}. We took into considerations two of the three published Matlab datasets: \textit{ARS\_DLR\_Data\_Set\_V2.mat} and \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}. 
+The signals the authors have worked on were provided by DLR official website \cite{DLR}. We took into considerations two of the three published Matlab datasets: \textit{ARS\_DLR\_Data\_Set\_V2.mat} and \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}.
 Both of them are made up of signals recovered by a \gls{mems} based \gls{imu} (an Xsens MTx-28A53G25) composed by an accelerometer, a gyroscope and a magnetometer. These measurements systems provide informations about the inertial acceleration, the angular velocity and the magnetic field direction.
 At the experiment joined fourteen people and the \gls{imu}, that was positioned over the pelvic region of each one (\fig{fig:IMU}), recovered signals during some ordinary motion activities like \textit{standing}, \textit{sitting}, \textit{running}, \textit{jumping}, \textit{lying} and all the transitional phases from an activity to another.
 
@@ -36,7 +42,7 @@ Both datasets are divided in activity sessions, 34 in \textit{ARS\_DLR\_Data\_Se
 	'RUNNING' & $0$ & running \\
 	'WALKING' & $1$ & walking \\
 	'JUMPING' & $2$ & jumping  \\
-	'STNDING' & $3$ & standing \\ 
+	'STNDING' & $3$ & standing \\
 	'SITTING' & $4$ & sitting\\
 	'XLYINGX' & $5$ & lying \\
 	'FALLING' & $6$ & falling \\
@@ -53,7 +59,7 @@ Both datasets are divided in activity sessions, 34 in \textit{ARS\_DLR\_Data\_Se
 
 
 \subsection{Signal pre-processing}
-The first pre-processing applied to the dataset consisted in representing the signals according to the global frame using the rotation matrix \MC{should I say more?}. The dataset considered already contains pre-processed data, sampled with T = 0.01 s. 
+The first pre-processing applied to the dataset consisted in representing the signals according to the global frame using the rotation matrix \MC{should I say more?}. The dataset considered already contains pre-processed data, sampled with T = 0.01 s.
 
 In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of Susanna activity sessions. These figures represent the norm of accelerometer, gyroscope and magnetometer over the three global coordinates instead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm. In particular in \fig{fig:acc} the shift of the acceleration mean around 9.8 m/s is noticeable, value coherent with the gravitational constant value \textit{g}. It also emerges in each of these figures how the transitory activities from standing to sitting and vice versa can be observable due to the drastic change of the signals.
 
@@ -93,7 +99,7 @@ Even if motion signals are not two dimensional signals, the type of data the aut
 
 Since the \gls{cnn} needs a fixed input the authors decided to divide in patterns each session matrix and associate to them the corresponding label. The pattern length was decided equal to 27, that is the shortest activity length in the whole dataset. 
 
-Then it was taken every activity and it was divided in overlapping windows with stride equals to 3. The obtained final dataset was made by several windows associated to a specific activity. No transitional pattern from an activity to another were taken. 
+Then it was taken every activity and it was divided in overlapping windows with stride equals to 3. The obtained final dataset was made by several windows associated to a specific activity. No transitional pattern from an activity to another were taken.
 
 
 The last procedure attuated was a shuffle of the dataset.
@@ -136,7 +142,7 @@ Then four 1D convolutional layers were applied: the changing dimension of a sing
 	CONV1 & $31$ & $5$ & $1$ & $(31-5)/1+1 = 27$\\
 	CONV2 & $27$ & $5$ & $1$ & $(27-5)/1+1 = 23$\\
 	CONV3 & $27$ & $3$ & $1$ & $(23-3)/1+1 = 21$\\
-	CONV4 & $21$ & $3$ & $1$ & $(21-3)/1+1 = 19$\\ 
+	CONV4 & $21$ & $3$ & $1$ & $(21-3)/1+1 = 19$\\
 	\bottomrule
 	\end{tabular}
 	\caption{Filters dimension along the pattern columns. N is the number of rows of the input pattern. K is the dimension of the kernel. S is the stride dimension.}

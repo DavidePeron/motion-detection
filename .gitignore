@@ -1,4 +1,5 @@
 *.mat
+ARSDLRDataSet/
 *.h5
 *.pyc
 *.blg

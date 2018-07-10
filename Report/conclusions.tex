@@ -1,0 +1,36 @@
+% !TEX root = template.tex
+
+\section{Summary of the project}
+\label{sec:summary}
+This work has been useful to approach new machine learning tools both from a theoretical and a practical point of view, understanding the problems that one may encounter.
+In specific, we saw how \gls{ann} and \gls{cnn} work and how can be implemented to solve a given task, we learned to use deep learning framework like Keras and TensorFlow together with advanced version control software. Moreover we improved our knowledge about Python and how to optimize it to work with big amount of data.
+
+During the project we encountered several problems, we tried to solve them and we found a solution or a reasonable answer.
+Firstly, we noticed that the number of samples for each label is highly unbalanced, the solution we thought were to use data augmentation and to weight different each label in the \gls{cnn}. We tried to implement the first solution creating new samples adding noise to the original signals. In our trial we used gaussian noise with a small variance but the result was a low accuracy. Maybe the solution is to estimate a better model for the noise using it instead of a standard gaussian noise.
+In the second case we tried to differently weight the classes but we can't adapt our architecture to the requirements of the apposite keras' function.
+Our solution has been to use a smaller stride for these activities to have more data, but it did not lead to a significant improvement.
+
+In the learning phase the biggest problem was the time needed to train the network. We solved this problem installing CUDA drivers in Windows 10 and using the Graphic Card to learn the model.
+
+In the last part, the main problem was how to elaborate the windows of the benchmark signals containing the transitions from an activity to another. Our first idea was to add to the training set some windows correspondent to the transitions and assign them the label \textit{TRANSIT} (i.e. \textit{activity not recognized}), but the only result was a lower accuracy, so we decided to skip those parts when sliding over the benchmark signals.
+
+Finally, we noticed that in the benchmark dataset misses the label \textit{TRANSDCC}, so both precision and recall has been put to zero even if these labels were not present at all in the prediction phase.
+
+\section{Conclusions and future works}
+\label{sec:conclusions}
+
+In this work, a novel approach to activity recognition has been proposed, using \gls{cnn} as deep learning tool to predict automatically activities.
+The authors started from a dataset used originally to make activity recognition using a feature selection approach, they applied some preprocessing and they used the preprocessed data to learn the Neural Network.
+Then the learned model has been applied to raw signals to show how this architecture is feasible for a real time system.
+Remarkable results has been obtained, an accuracy of over $94\%$ in testing phase and an overall recognition rate of $75\%$ in the real time prediction.
+
+Given its automatic nature, the described \gls{ars} can be used to learn other datasets, adjusting the dimension of the input and the labels to predict. In presence of a bigger amount of data, the \gls{cnn} can be probably learned with more epochs without overfitting the data.
+
+The solution proposed proves how \gls{cnn} can be used in activity recognition instead of techniques based on hand-crafted features.
+
+The \gls{ars} described can be extended to reach an higher accuracy.
+Assigning higher weights to the less frequent activities in the dataset could lead to a more robust prediction and could increase the overall accuracy of the \gls{nn}.
+
+Another solution to this problem could be using a dataset with a balanced number of occurrences per label, in this case weighting differently the activities can be unnecessary.
+
+The natural continuation of this work would be to find a way to take into account also the transitions between different activities to make the prediction more robust.

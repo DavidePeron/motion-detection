@@ -1,0 +1,122 @@
+\documentclass[10pt, conference, letterpaper]{IEEEtran}
+
+
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{import}
+\usepackage{multirow}
+\usepackage{cite}
+\usepackage[export]{adjustbox}
+\usepackage{breqn}
+\usepackage{mathrsfs}
+\usepackage{acronym}
+\usepackage[acronym]{glossaries}
+\usepackage[keeplastbox]{flushend}
+\usepackage{setspace}
+\usepackage{stackengine}
+
+\usepackage{threeparttable}
+%\usepackage[table,xcdraw]{xcolor}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{booktabs}
+
+
+
+\renewcommand{\thetable}{\arabic{table}}
+\renewcommand{\thesubtable}{\alph{subtable}}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\def\delequal{\mathrel{\ensurestackMath{\stackon[1pt]{=}{\scriptscriptstyle\Delta}}}}
+
+\graphicspath{{./figures/}}
+\setlength{\belowcaptionskip}{0mm}
+\setlength{\textfloatsep}{8pt}
+
+\newcommand{\eq}[1]{Eq.~\eqref{#1}}
+\newcommand{\fig}[1]{Fig.~\ref{#1}}
+\newcommand{\tab}[1]{Tab.~\ref{#1}}
+\newcommand{\secref}[1]{Section~\ref{#1}}
+
+\newcommand\MR[1]{\textcolor{blue}{#1}}
+\newcommand\red[1]{\textcolor{red}{#1}}
+\newcommand\DP[1]{\textcolor{red}{DP says: #1}}
+\newcommand\MC[1]{\textcolor{orange}{MC says: #1}}
+
+\newacronym[plural=IMUs,firstplural=Inertial Measurement Units (IMUs)]{imu}{IMU}{Inertial Measurement Unit}
+\newacronym[plural=CNNs,firstplural=Convolutional Neural Networks (CNNs)]{cnn}{CNN}{Convolutional Neural Network}
+\newacronym{ann}{ANN}{Artificial Neural Networks}
+\newacronym{mems}{MEMS}{Micro Electro-Mechanical System}
+\newacronym{svm}{SVM}{Support Vector Machines}
+\newacronym{ars}{ARS}{Activity Recognition Systems}
+\newacronym{nn}{NN}{Neural Network}
+\newacronym{dt}{DT}{Decision Trees}
+\newacronym{rf}{RF}{Random Forest}
+\newacronym{lstm}{LSTM}{Long Short-Term Memory}
+\newacronym{rnn}{RNN}{Recurrent Neural Networks}
+\newacronym{hmm}{HMM}{Hidden Markov Chain}
+\newacronym{dlr}{DLR}{German Aerospace Center}
+\newacronym{relu}{ReLU}{Rectified Linear Unit}
+
+%\renewcommand{\baselinestretch}{0.98}
+% \renewcommand{\bottomfraction}{0.8}
+% \setlength{\abovecaptionskip}{0pt}
+\setlength{\columnsep}{0.2in}
+
+% \IEEEoverridecommandlockouts\IEEEpubid{\makebox[\columnwidth]{PUT COPYRIGHT NOTICE HERE \hfill} \hspace{\columnsep}\makebox[\columnwidth]{ }}
+
+\title{CNN-based real-time activity recognition system}
+
+\author{Marta Carraro$^\dag$, Davide Peron$^\dag$
+\thanks{$^\dag$Department of Information Engineering, University of Padova, email: \{carrarom, perondav\}@dei.unipd.it}
+}
+
+\IEEEoverridecommandlockouts
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Body sensors play an increasingly important role in our everyday life, they can be fundamental in terms of survival and health (think about pacemakers, bionic eye, bionic ear, etc.) or they offer us a new kinds of entertainment (such as fitness bands, sensors used in video games, etc.).
+
+In most cases, especially in sensors that make use of \glspl{imu}, a motion recognition system is required. Depending on the application, these motions can be both small gestures or complex activity in which the entire body moves.
+A lot of effort has been put in find an efficient way to recognize in real time everyday activities and apply these solutions to a wide range of scenarios like first responders, assisted living rehabilitation, etc.
+
+In this work CNN-based activity recognition systems are investigated and different architectures are tried. The goal is to train a \gls{cnn} capable of recognizing 11 different types of activities, showing that this type of \gls{ann} can give good predictions also with 1D data.
+
+The resulting prediction accuracy in real-time application reveals that this architecture performs well in the learning phase but gives poor accuracy when tried on new data.
+\end{abstract}
+
+\IEEEkeywords
+Activity recognition, Convolutional Neural Networks, Machine Learning, Real-time systems, Inertial sensors
+\endIEEEkeywords
+
+\input{intro}
+
+\input{related}
+
+\input{model}
+
+\input{results}
+
+\input{conclusions}{}
+
+\bibliography{biblio}
+\bibliographystyle{ieeetr}
+
+\end{document}

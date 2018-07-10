@@ -127,7 +127,7 @@ Because of the fixed input shape of the \gls{cnn}, the dataset \MC{which dataset
 
 The \gls{cnn} architecture is schematically presented in \fig{fig:CNN} and in this section is going to be explained in details using the showed labeling of the layers. 
 
-Even if we're working with matrices, we decided to treat the single input pattern as a vertical 27 size vector with 9 channels. Zero Padding was firstly applied at the first and last two rows of the input in order to initially train more the \gls{nn} in the borders.\MC{but is it really true?}
+Even if we're working with matrices, we decided to treat the single input pattern as a vertical 27 size vector with 9 channels. Zero Padding was firstly applied at the first and last two rows of the input in order to take in account also the borders in the convolutional layers.
 
 Then four 1D convolutional layers were applied: the changing dimension of a single pattern is shown in \fig{fig:CNN}, the row size is calculated in \tab{tab:filtersize}
 

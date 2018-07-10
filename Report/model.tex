@@ -97,11 +97,11 @@ Each session is finally represented as a long and straight matrix with nine colu
 
 \begin{LaTeXdescription}
 	\item[\textit{ARS\_DLR\_Data\_Set\_V2.mat}]
-		Since the \gls{cnn} needs a fixed input the authors decided to divide in patterns each session matrix and associate to them the corresponding label. The pattern length was decided equal to 27, that is the shortest activity length in the whole dataset.
-		Then it was taken every activity and it was divided in overlapping windows with stride equals to 3. The obtained final dataset was made by several windows associated to a specific activitylabel. The associated labels are all one hot encoded. No transitional patterns from an activity to another were taken. The last procedure attuated was a shuffle of the dataset.
+		Since the \gls{cnn} needs a fixed input, each session matrix has been divided in patterns correspondent to a specific activity.
+		Every activity, then, has been divided in overlapping windows with stride equals to 3 and length equal to 27 samples, that is the shortest activity length in the whole dataset. The obtained dataset is made by several windows associated to a specific activity label, no transitional windows from an activity to another has been taken. The associated labels are then one hot encoded and, to ensure the independence between an input and the subsequent one in the \gls{cnn}, the dataset is finally shuffled.
 
 	\item[\textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}]
-		It is composed by 3 activity sessions and it was used for real time prediction purposes. The authors segmented in 27 length patterns with a stride of 5 every session matrix. The authors decided to consider also the trasitorial patterns in order to create a realistic real time prediction trial.
+		It is composed by 3 activity sessions and it was used for real time prediction purposes. The signals are segmented in 27 length patterns with stride 5. The algorithm takes into account also transitional windows in order to simulate a realistic real time prediction trial even if they are not considered in the computation of the performance metrics.
 \end{LaTeXdescription}
 
 

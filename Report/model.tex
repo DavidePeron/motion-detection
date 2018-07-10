@@ -93,7 +93,7 @@ The authors resolved the problem removing the non indexed data and the data whos
 \MC{DATASET 1}
 
 Each session is finally represented as a long and straight matrix with nine columns (three for each measurement system) and a number of rows equals to the session duration. Due to the straight sampling time the number of rows stands at around $10^3$-$10^4$ order of magnitude.
-Even if motion signals are not two dimensional signals, the type of data the authors have worked on are properly matrices
+Even if motion signals are not two dimensional signals, the type of data the authors have worked on are properly matrices.
 %Even if motion signals are not two dimensional signals, the peculiarity of input shape makes it suitable to be treated as a kind of image with a shape of a vector with 9 channels. Therefore according to the adopted strategy of \textit{Gadaleta et al.}, the dataset was processed in order to be fit into a \gls{cnn} \cite{Gadaleta-2018}.
 
 
@@ -149,18 +149,13 @@ Then four 1D convolutional layers were applied: the changing dimension of a sing
 	\label{tab:filtersize}
 \end{table}
 
-After each convolutional layer is applied a Batch Normalization and a "ReLu" Activation Function.
+After each convolutional layer is applied a Batch Normalization and a \textit{ReLu} Activation Function.
 
-After this feature learning block follows a classification part made of three fully connected layers:to allow this passage a flattening of Conv4 output filters in necessary (see Flatten layer in \fig{fig:CNN}). Then follows three fully connected layers of size respecively 256, 128 and 11 with a "ReLu" activation function exept except the last one that has a "softmax" function. The last one is the output and presents a size equal to the number of the activity labels considered.
+After this feature learning block follows a classification part made of three fully connected layers:to allow this passage a flattening of Conv4 output filters in necessary (see Flatten layer in \fig{fig:CNN}). Then follows three fully connected layers of size respecively 256, 128 and 11 with a \textit{ReLu} activation function exept except the last one that has a \textit{softmax} function. The last one is the output, each of its 11 elements contains the probability of a label to be the most likely. \textit{Softmax} functions needs to find the label that has the higher probability. Because the \gls{nn} aims to get a classification of more than two labels the loss function used was \textit{categorical crossentropy}.
 
-In order to get a better generalization of the model Dropout layers were added: the authors decided to adopt a dropout of 0.15 after Conv1, Conv2 and Conv3, 0.25 before Flatten and 0.5 after Dense1 and Dense2 \MC{CITE}.
+In order to get a better generalization of the model Dropout layers were added, in particular the authors decided to adopt a dropout of p = 0.15 after Conv1, Conv2 and Conv3, p = 0.25 before Flatten and p = 0.5 after Dense1 and Dense2. This choice was made according to the most commonly used \gls{cnn} configuration proposed by Hinton (p = 0.5 on each fully connected layer) and a more singular configuration proposed by  (p = 0.1-0.2 between the convolutional layers)~\cite{Hinton12}~\cite{Sungheon17}.
+The textit{training set} was trained for 10 epochs with a batch size of 128 and the optimizer used was \textit{adam}. 
 
-
-\MC{The \gls{nn} was not trained with transitional patterns.}
-
-
-The \gls{nn} was trained for 10 epochs with a batch size of 128. The optimizer used was \textit{Adam}. \MC{categorical crossentropy} 
-\MC{one hot encoder}
 
 
 

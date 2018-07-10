@@ -1,0 +1,241 @@
+(base) C:\motion-detection>python CNN_model.py
+Using TensorFlow backend.
+X_train shape = (258002, 27, 9)
+Y_train shape = (258002, 11)
+X_test shape = (64500, 27, 9)
+Y_test shape = (64500, 11)
+X_train shape = (258002, 27, 9)
+Y_train shape = (258002, 11)
+X_test shape = (64500, 27, 9)
+Y_test shape = (64500, 11)
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+input_1 (InputLayer)         (None, 27, 9)             0
+_________________________________________________________________
+zero_padding1d_1 (ZeroPaddin (None, 31, 9)             0
+_________________________________________________________________
+conv1d_1 (Conv1D)            (None, 27, 64)            2944
+_________________________________________________________________
+batch_normalization_1 (Batch (None, 27, 64)            108
+_________________________________________________________________
+activation_1 (Activation)    (None, 27, 64)            0
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 27, 64)            0
+_________________________________________________________________
+conv1d_2 (Conv1D)            (None, 23, 64)            20544
+_________________________________________________________________
+batch_normalization_2 (Batch (None, 23, 64)            92
+_________________________________________________________________
+activation_2 (Activation)    (None, 23, 64)            0
+_________________________________________________________________
+dropout_2 (Dropout)          (None, 23, 64)            0
+_________________________________________________________________
+conv1d_3 (Conv1D)            (None, 21, 32)            6176
+_________________________________________________________________
+batch_normalization_3 (Batch (None, 21, 32)            84
+_________________________________________________________________
+activation_3 (Activation)    (None, 21, 32)            0
+_________________________________________________________________
+dropout_3 (Dropout)          (None, 21, 32)            0
+_________________________________________________________________
+conv1d_4 (Conv1D)            (None, 19, 32)            3104
+_________________________________________________________________
+batch_normalization_4 (Batch (None, 19, 32)            76
+_________________________________________________________________
+activation_4 (Activation)    (None, 19, 32)            0
+_________________________________________________________________
+dropout_4 (Dropout)          (None, 19, 32)            0
+_________________________________________________________________
+flatten_1 (Flatten)          (None, 608)               0
+_________________________________________________________________
+dense_1 (Dense)              (None, 256)               155904
+_________________________________________________________________
+dropout_5 (Dropout)          (None, 256)               0
+_________________________________________________________________
+dense_2 (Dense)              (None, 128)               32896
+_________________________________________________________________
+dropout_6 (Dropout)          (None, 128)               0
+_________________________________________________________________
+dense_3 (Dense)              (None, 11)                1419
+=================================================================
+Total params: 223,347
+Trainable params: 223,167
+Non-trainable params: 180
+_________________________________________________________________
+Train on 206401 samples, validate on 51601 samples
+Epoch 1/10
+2018-07-09 12:40:12.650228: I T:\src\github\tensorflow\tensorflow\core\platform\cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2
+2018-07-09 12:40:13.804130: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1356] Found device 0 with properties:
+name: GeForce GTX 1050 major: 6 minor: 1 memoryClockRate(GHz): 1.493
+pciBusID: 0000:01:00.0
+totalMemory: 4.00GiB freeMemory: 3.30GiB
+2018-07-09 12:40:13.816019: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1435] Adding visible gpu devices: 0
+2018-07-09 12:40:15.844771: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:923] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-07-09 12:40:15.851744: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:929]      0
+2018-07-09 12:40:15.856589: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:942] 0:   N
+2018-07-09 12:40:15.861568: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1053] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 3038 MB memory) -> physical GPU (device: 0, name: GeForce GTX 1050, pci bus id: 0000:01:00.0, compute capability: 6.1)
+206401/206401 [==============================] - 32s 157us/step - loss: 0.6452 - acc: 0.8083 - val_loss: 0.3931 - val_acc: 0.8818
+Epoch 2/10
+206401/206401 [==============================] - 24s 116us/step - loss: 0.3920 - acc: 0.8822 - val_loss: 0.3140 - val_acc: 0.9032
+Epoch 3/10
+206401/206401 [==============================] - 24s 117us/step - loss: 0.3185 - acc: 0.9046 - val_loss: 0.2495 - val_acc: 0.9243
+Epoch 4/10
+206401/206401 [==============================] - 24s 117us/step - loss: 0.2838 - acc: 0.9161 - val_loss: 0.2266 - val_acc: 0.9342
+Epoch 5/10
+206401/206401 [==============================] - 24s 117us/step - loss: 0.2603 - acc: 0.9234 - val_loss: 0.2040 - val_acc: 0.9405
+Epoch 6/10
+206401/206401 [==============================] - 25s 122us/step - loss: 0.2429 - acc: 0.9280 - val_loss: 0.1935 - val_acc: 0.9418
+Epoch 7/10
+206401/206401 [==============================] - 27s 130us/step - loss: 0.2311 - acc: 0.9316 - val_loss: 0.1902 - val_acc: 0.9423
+Epoch 8/10
+206401/206401 [==============================] - 24s 116us/step - loss: 0.2195 - acc: 0.9350 - val_loss: 0.1721 - val_acc: 0.9464
+Epoch 9/10
+206401/206401 [==============================] - 24s 117us/step - loss: 0.2098 - acc: 0.9377 - val_loss: 0.1723 - val_acc: 0.9474
+Epoch 10/10
+206401/206401 [==============================] - 24s 116us/step - loss: 0.2065 - acc: 0.9382 - val_loss: 0.1652 - val_acc: 0.9489
+64500/64500 [==============================] - 8s 118us/step
+Loss = 0.17273192294323167
+Test Accuracy = 0.9469767441786537
+
+(base) C:\motion-detection>python generate_benchmark.py
+Using TensorFlow backend.
+2018-07-09 12:44:56.468374: I T:\src\github\tensorflow\tensorflow\core\platform\cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2
+2018-07-09 12:44:57.476654: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1356] Found device 0 with properties:
+name: GeForce GTX 1050 major: 6 minor: 1 memoryClockRate(GHz): 1.493
+pciBusID: 0000:01:00.0
+totalMemory: 4.00GiB freeMemory: 3.30GiB
+2018-07-09 12:44:57.487173: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1435] Adding visible gpu devices: 0
+2018-07-09 12:44:58.222580: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:923] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-07-09 12:44:58.229068: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:929]      0
+2018-07-09 12:44:58.233794: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:942] 0:   N
+2018-07-09 12:44:58.238172: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1053] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 3038 MB memory) -> physical GPU (device: 0, name: GeForce GTX 1050, pci bus id: 0000:01:00.0, compute capability: 6.1)
+TRANSDW ----------- 8
+Predicted label: 1
+SITTING ----------- 4
+Predicted label: 4
+TRANSUP ----------- 7
+Predicted label: 4
+STNDING ----------- 3
+Predicted label: 3
+WALKING ----------- 1
+Predicted label: 3
+JUMPING ----------- 2
+Predicted label: 2
+STNDING ----------- 3
+Predicted label: 3
+TRNSACC ----------- 9
+Predicted label: 4
+WALKING ----------- 1
+Predicted label: 1
+TRNSACC ----------- 9
+Predicted label: 1
+RUNNING ----------- 0
+Predicted label: 2
+JUMPING ----------- 2
+Predicted label: 2
+STNDING ----------- 3
+Predicted label: 5
+TRNSACC ----------- 9
+Predicted label: 1
+WALKING ----------- 1
+Predicted label: 1
+FALLING ----------- 6
+Predicted label: 1
+XLYINGX ----------- 5
+Predicted label: 5
+TRANSUP ----------- 7
+Predicted label: 6
+STNDING ----------- 3
+Predicted label: 3
+TRANSDW ----------- 8
+Predicted label: 1
+SITTING ----------- 4
+Predicted label: 5
+TRANSUP ----------- 7
+Predicted label: 4
+STNDING ----------- 3
+Predicted label: 3
+TRNSACC ----------- 9
+Predicted label: 3
+WALKING ----------- 1
+Predicted label: 1
+JUMPING ----------- 2
+Predicted label: 2
+STNDING ----------- 3
+Predicted label: 4
+TRNSACC ----------- 9
+Predicted label: 3
+WALKING ----------- 1
+Predicted label: 1
+TRNSACC ----------- 9
+Predicted label: 1
+RUNNING ----------- 0
+Predicted label: 0
+JUMPING ----------- 2
+Predicted label: 0
+STNDING ----------- 3
+Predicted label: 1
+TRNSACC ----------- 9
+Predicted label: 1
+WALKING ----------- 1
+Predicted label: 3
+STNDING ----------- 3
+Predicted label: 3
+TRNSACC ----------- 9
+Predicted label: 4
+WALKING ----------- 1
+Predicted label: 4
+FALLING ----------- 6
+Predicted label: 7
+XLYINGX ----------- 5
+Predicted label: 7
+TRANSUP ----------- 7
+Predicted label: 7
+STNDING ----------- 3
+Predicted label: 7
+TRANSDW ----------- 8
+Predicted label: 3
+SITTING ----------- 4
+Predicted label: 3
+TRANSUP ----------- 7
+Predicted label: 3
+STNDING ----------- 3
+Predicted label: 3
+TRNSACC ----------- 9
+Predicted label: 3
+WALKING ----------- 1
+Predicted label: 1
+JUMPING ----------- 2
+Predicted label: 1
+STNDING ----------- 3
+Predicted label: 3
+TRNSACC ----------- 9
+Predicted label: 3
+WALKING ----------- 1
+Predicted label: 1
+TRNSACC ----------- 9
+Predicted label: 1
+RUNNING ----------- 0
+Predicted label: 0
+JUMPING ----------- 2
+Predicted label: 0
+STNDING ----------- 3
+Predicted label: 3
+TRNSACC ----------- 9
+Predicted label: 1
+WALKING ----------- 1
+Predicted label: 1
+FALLING ----------- 6
+Predicted label: 2
+XLYINGX ----------- 5
+Predicted label: 4
+TRANSUP ----------- 7
+Predicted label: 5
+STNDING ----------- 3
+Predicted label: 1
+Number of windows: 11417
+Total predictions: 10543
+Prediction accuracy: 0.7588921559328464
+
+(base) C:\motion-detection>

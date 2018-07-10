@@ -1,0 +1,101 @@
+(base) C:\motion-detection>python CNN_model.py
+Using TensorFlow backend.
+X_train shape = (258002, 27, 9)
+Y_train shape = (258002, 11)
+X_test shape = (64500, 27, 9)
+Y_test shape = (64500, 11)
+X_train shape = (258002, 27, 9)
+Y_train shape = (258002, 11)
+X_test shape = (64500, 27, 9)
+Y_test shape = (64500, 11)
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+input_1 (InputLayer)         (None, 27, 9)             0
+_________________________________________________________________
+zero_padding1d_1 (ZeroPaddin (None, 31, 9)             0
+_________________________________________________________________
+conv1d_1 (Conv1D)            (None, 27, 64)            2944
+_________________________________________________________________
+batch_normalization_1 (Batch (None, 27, 64)            108
+_________________________________________________________________
+activation_1 (Activation)    (None, 27, 64)            0
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 27, 64)            0
+_________________________________________________________________
+conv1d_2 (Conv1D)            (None, 23, 64)            20544
+_________________________________________________________________
+batch_normalization_2 (Batch (None, 23, 64)            92
+_________________________________________________________________
+activation_2 (Activation)    (None, 23, 64)            0
+_________________________________________________________________
+dropout_2 (Dropout)          (None, 23, 64)            0
+_________________________________________________________________
+conv1d_3 (Conv1D)            (None, 21, 32)            6176
+_________________________________________________________________
+batch_normalization_3 (Batch (None, 21, 32)            84
+_________________________________________________________________
+activation_3 (Activation)    (None, 21, 32)            0
+_________________________________________________________________
+dropout_3 (Dropout)          (None, 21, 32)            0
+_________________________________________________________________
+conv1d_4 (Conv1D)            (None, 19, 32)            3104
+_________________________________________________________________
+batch_normalization_4 (Batch (None, 19, 32)            76
+_________________________________________________________________
+activation_4 (Activation)    (None, 19, 32)            0
+_________________________________________________________________
+dropout_4 (Dropout)          (None, 19, 32)            0
+_________________________________________________________________
+flatten_1 (Flatten)          (None, 608)               0
+_________________________________________________________________
+dense_1 (Dense)              (None, 256)               155904
+_________________________________________________________________
+dropout_5 (Dropout)          (None, 256)               0
+_________________________________________________________________
+dense_2 (Dense)              (None, 128)               32896
+_________________________________________________________________
+dropout_6 (Dropout)          (None, 128)               0
+_________________________________________________________________
+dense_3 (Dense)              (None, 11)                1419
+=================================================================
+Total params: 223,347
+Trainable params: 223,167
+Non-trainable params: 180
+_________________________________________________________________
+Train on 206401 samples, validate on 51601 samples
+Epoch 1/10
+2018-07-09 09:57:34.781225: I T:\src\github\tensorflow\tensorflow\core\platform\cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2
+2018-07-09 09:57:36.264739: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1356] Found device 0 with properties:
+name: GeForce GTX 1050 major: 6 minor: 1 memoryClockRate(GHz): 1.493
+pciBusID: 0000:01:00.0
+totalMemory: 4.00GiB freeMemory: 3.30GiB
+2018-07-09 09:57:36.275051: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1435] Adding visible gpu devices: 0
+2018-07-09 09:57:38.185007: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:923] Device interconnect StreamExecutor with strength 1 edge matrix:
+2018-07-09 09:57:38.191942: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:929]      0
+2018-07-09 09:57:38.196798: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:942] 0:   N
+2018-07-09 09:57:38.202247: I T:\src\github\tensorflow\tensorflow\core\common_runtime\gpu\gpu_device.cc:1053] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 3038 MB memory) -> physical GPU (device: 0, name: GeForce GTX 1050, pci bus id: 0000:01:00.0, compute capability: 6.1)
+206401/206401 [==============================] - 32s 156us/step - loss: 0.6544 - acc: 0.8064 - val_loss: 0.3910 - val_acc: 0.8762
+Epoch 2/10
+206401/206401 [==============================] - 26s 125us/step - loss: 0.3972 - acc: 0.8821 - val_loss: 0.2886 - val_acc: 0.9086
+Epoch 3/10
+206401/206401 [==============================] - 26s 124us/step - loss: 0.3149 - acc: 0.9079 - val_loss: 0.2743 - val_acc: 0.9207
+Epoch 4/10
+206401/206401 [==============================] - 24s 119us/step - loss: 0.2813 - acc: 0.9175 - val_loss: 0.2281 - val_acc: 0.9280
+Epoch 5/10
+206401/206401 [==============================] - 26s 126us/step - loss: 0.2599 - acc: 0.9240 - val_loss: 0.2134 - val_acc: 0.9363
+Epoch 6/10
+206401/206401 [==============================] - 25s 119us/step - loss: 0.2427 - acc: 0.9292 - val_loss: 0.1902 - val_acc: 0.9442
+Epoch 7/10
+206401/206401 [==============================] - 24s 116us/step - loss: 0.2326 - acc: 0.9325 - val_loss: 0.1912 - val_acc: 0.9433
+Epoch 8/10
+206401/206401 [==============================] - 24s 117us/step - loss: 0.2205 - acc: 0.9355 - val_loss: 0.1772 - val_acc: 0.9473
+Epoch 9/10
+206401/206401 [==============================] - 25s 120us/step - loss: 0.2120 - acc: 0.9375 - val_loss: 0.1703 - val_acc: 0.9491
+Epoch 10/10
+206401/206401 [==============================] - 24s 115us/step - loss: 0.2065 - acc: 0.9398 - val_loss: 0.1747 - val_acc: 0.9473
+64500/64500 [==============================] - 7s 116us/step
+Loss = 0.17662202548195224
+Test Accuracy = 0.9459534883683967
+
+(base) C:\motion-detection>

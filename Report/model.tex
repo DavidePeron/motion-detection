@@ -110,20 +110,27 @@ Each session is finally represented as a long and straight matrix with nine colu
 
 \section{CNN Architecture}
 \label{sec:cnn_architecture}
+
 \begin{figure}[htp]
 \includegraphics[scale=1.23]{CNN_arch.pdf}
-\caption{\gls{cnn} architecture for a single input. Only changing size operations are showed.}
+\caption{\gls{cnn} architecture for a single input. Only layers that change the size of the input are showed.}
 \label{fig:CNN}
 \end{figure}
 
 
-Because of the fixed input shape of the \gls{cnn}, the dataset \MC{which dataset?} is composed by 322502 patterns with shape (27,9) and it was divided in two subsets: the \textit{training set} that is constituted by the 80\% of the whole patterns, the remaining part forms the \textit{testing set}.
+The first dataset is composed by 322502 patterns with shape (27,9) and it includes both the training set and the test set. These data are divided in training set and test set using respectively the $80\%$ and the $20\%$  of the whole patterns.
 
-The \gls{cnn} architecture is schematically presented in \fig{fig:CNN} and in this section is going to be explained in details using the showed labeling of the layers.
+The \gls{cnn} architecture is schematically presented in \fig{fig:CNN} and in this section is explained in details using the showed labeling of the layers.
 
-Even if we're working with matrices, we decided to treat the single input pattern as a vertical 27 size vector with 9 channels. Zero Padding was firstly applied at the first and last two rows of the input in order to take in account also the borders in the convolutional layers.
+Even if the \gls{cnn} works with matrices, has been decided to treat the single input pattern as a vertical 27 size vector with 9 channels. Zero Padding was firstly applied at the first and last two rows of the input in order to take in account also the borders in the convolutional layers.
 
-Then four 1D convolutional layers were applied: the changing dimension of a single pattern is shown in \fig{fig:CNN}, the row size is calculated in \tab{tab:filtersize}
+Then four 1D convolutional layers are applied: the changing dimension of a single pattern is shown in \fig{fig:CNN}, the row size is calculated as in \eq{eq:row_size} where $r_l$ stands for the row size of the output of the $l^{th}$ layer, $r_{l-1}$ is the row size of the output of the $l-1^{th}$ layer, $k$ is the kernel size and $s$ is the stride used in the $l^{th}$ layer. In \tab{tab:filtersize} the row size for each layer is reported.
+
+\begin{equation}
+  \label{eq:row_size}
+  r_l = \frac{r_{l-1} - k}{s} + 1
+\end{equation}
+
 
 \begin{table}[htp]
 \small
@@ -131,21 +138,21 @@ Then four 1D convolutional layers were applied: the changing dimension of a sing
 		\renewcommand{\arraystretch}{1}% Tighter
 	\begin{tabular}{@{}lllll@{}}
 	\toprule
-	LAYER & N & K & S & OUTPUT\\
+	LAYER & $r_{l-1}$ & $k$ & $s$ & OUTPUT\\
 	\midrule
-	CONV1 & $31$ & $5$ & $1$ & $(31-5)/1+1 = 27$\\
-	CONV2 & $27$ & $5$ & $1$ & $(27-5)/1+1 = 23$\\
-	CONV3 & $27$ & $3$ & $1$ & $(23-3)/1+1 = 21$\\
-	CONV4 & $21$ & $3$ & $1$ & $(21-3)/1+1 = 19$\\
+	CONV1 & $31$ & $5$ & $1$ & $27$\\
+	CONV2 & $27$ & $5$ & $1$ & $23$\\
+	CONV3 & $27$ & $3$ & $1$ & $21$\\
+	CONV4 & $21$ & $3$ & $1$ & $19$\\
 	\bottomrule
 	\end{tabular}
-	\caption{Filters dimension along the pattern columns. N is the number of rows of the input pattern. K is the dimension of the kernel. S is the stride dimension.}
+	\caption{Filters dimension along the pattern columns.}
 	\label{tab:filtersize}
 \end{table}
 
-After each convolutional layer is applied a Batch Normalization and a \textit{ReLu} Activation Function.
+After each convolutional layer a Batch Normalization and a \gls{relu} activation Function is applied.
 
-After this feature learning block follows a classification part made of three fully connected layers:to allow this passage a flattening of Conv4 output filters in necessary (see Flatten layer in \fig{fig:CNN}). Then follows three fully connected layers of size respecively 256, 128 and 11 with a \textit{ReLu} activation function exept except the last one that has a \textit{softmax} function. The last one is the output, each of its 11 elements contains the probability of a label to be the most likely. \textit{Softmax} functions needs to find the label that has the higher probability. Because the \gls{nn} aims to get a classification of more than two labels the loss function used was \textit{categorical crossentropy}.
+After this feature learning block, follows a classification part made of three fully connected layers: to allow this passage a flattening of Conv4 output filters is necessary (see Flatten layer in \fig{fig:CNN}). Then follows three fully connected layers of size respecively 256, 128 and 11 with \gls{relu} activation function except the last one where Softmax function has been used. The last one is the output, each of its 11 elements contains the prediction probability of a label. Softmax functions needs to find the label that has the higher probability. Since the activities to classify using the \gls{nn} are  more than two, the loss function used was \textit{categorical cross-entropy}.
 
-In order to get a better generalization of the model Dropout layers were added, in particular the authors decided to adopt a dropout of p = 0.15 after Conv1, Conv2 and Conv3, p = 0.25 before Flatten and p = 0.5 after Dense1 and Dense2. This choice was made according to the most commonly used \gls{cnn} configuration proposed by Hinton (p = 0.5 on each fully connected layer) and a more singular configuration proposed by  (p = 0.1-0.2 between the convolutional layers)~\cite{Hinton12}~\cite{Sungheon17}.
+In order to get a better generalization of the model, Dropout has been added. In particular the authors decided to adopt a Dropout of p = 0.15 after Conv1, Conv2 and Conv3, p = 0.25 before Flatten and p = 0.5 after Dense1 and Dense2. This choice was made according to the most commonly used \gls{cnn} configuration proposed by Hinton et al.(p = 0.5 on each fully connected layer) and a more singular configuration proposed by Sungheon et al.(p = 0.1-0.2 between the convolutional layers)~\cite{Hinton12}~\cite{Sungheon17}.
 The \textit{training set} was trained for 10 epochs with a batch size of 128 and the optimizer used was \textit{adam}.

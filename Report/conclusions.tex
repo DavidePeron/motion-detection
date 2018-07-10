@@ -23,11 +23,11 @@ In this work, a novel approach to activity recognition has been proposed, using 
 The authors started from a dataset used originally to make activity recognition using a feature selection approach, they applied some preprocessing and they used the preprocessed data to learn the Neural Network.
 Then, the learned model has been applied to raw signals to show how this architecture is feasible for a real time system.
 Remarkable results has been obtained, an accuracy of over $94\%$ in testing phase and an overall recognition rate of $75\%$ in the real time prediction.
+Given its automatic nature, the described \gls{ars} can be used to learn other datasets, adjusting the dimension of the input and the labels to predict. In presence of a bigger amount of data, the \gls{cnn} can be probably learned with more epochs without overfitting the data.
 
-\red{This section should take max half a page.}
+The solution proposed prove how \gls{cnn} can be used in activity recognition instead of techniques based on hand-crafted features.
 
-\MR{In many papers, here you find a summary of what done. It is basically an abstract where instead of using the present tense you use the past participle, as you refer to something that you have already developed in the previous sections. While I did it myself in the past, I now find it rather useless.}\\
-
-\MR{\textbf{What I would like to see here is:} 1) a very short summary of what done, 2) some (possibly) intelligent observations on the relevance and {\it applicability} of your algorithms / findings, 3) what is still missing, and can be done in the future to extend your work. The idea is that this section should be {\it useful} and not just a repetition of the abstract (just \mbox{re-phrased} and written using a different tense...).}\\
-
-\MR{\textbf{Moreover:} being a project report, I would also like to see a specific paragraph specifying: 1) what you have learned, and 2) any difficulties you may have encountered.}
+The \gls{ars} described can be extended to reach an higher accuracy.
+An improvement to the overall efficiency of the network can be to assign higher weights to the activities less frequent in the dataset, to have a more robust prediction also for those activities increasing the accuracy of the \gls{cnn}.
+Another solution to this problem can be using a dataset with a balanced number of occurrences per label, in this case weighting differently the activities can be unnecessary.
+The natural continuation of this work will be to find a way to take into account also the transitions between different activities to make the prediction more robust.

@@ -65,7 +65,7 @@ In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of Susanna activ
 
 Another sort of pre-processing was made in order to fix the activity indexing of some recordings. It frequently happened to find that, considering two adjacent motion activities, the end of the previous activity and the beginning of the succeeding one were not temporarily neighboring. It happened also to find two activities temporarily overlapping: the end of the previous activity was indexed after the beginning of the second one. 
 The authors resolved the problem removing the non indexed data and the data whose label was uncertain so as to not train the \gls{nn} with wrongly labeled data.
-k
+
 Each session is finally represented as a long and straight matrix with nine columns (three for each measurement system) and a number of rows equals to the session duration. Due to the straight sampling time the number of rows stands at around $10^3$-$10^4$ order of magnitude.
 
 \MC{ADD LABELS ON SUSANNA FIGURES!!!}
@@ -94,11 +94,10 @@ Each session is finally represented as a long and straight matrix with nine colu
 \begin{LaTeXdescription}
 	\item[\textit{ARS\_DLR\_Data\_Set\_V2.mat}]
 		Since the \gls{cnn} needs a fixed input the authors decided to divide in patterns each session matrix and associate to them the corresponding label. The pattern length was decided equal to 27, that is the shortest activity length in the whole dataset. 
-		Then it was taken every activity and it was divided in overlapping windows with stride equals to 3. The obtained final dataset was made by several windows associated to a specific activity. No transitional pattern from an activity to another were taken.
-		The last procedure attuated was a shuffle of the dataset.
+		Then it was taken every activity and it was divided in overlapping windows with stride equals to 3. The obtained final dataset was made by several windows associated to a specific activitylabel. The associated labels are all one hot encoded. No transitional patterns from an activity to another were taken. The last procedure attuated was a shuffle of the dataset.
 
 	\item[\textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}]
-		It is composed by 3 activity sessions and it was used for real time prediction purposes. The authors segmented in 27 length patterns with a stride of 5 every session matrix. 
+		It is composed by 3 activity sessions and it was used for real time prediction purposes. The authors segmented in 27 length patterns with a stride of 5 every session matrix. The authors decided to consider also the trasitorial patterns in order to create a realistic real time prediction trial.
 \end{LaTeXdescription}
 
 

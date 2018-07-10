@@ -12,18 +12,18 @@ This work improves the work made in \cite{Frank10} using a \gls{cnn}-based techn
 In the original work a total of 19 features were extracted from the recorded signals, making the model strongly data-dependent.
 The aim of this work is to elaborate the dataset used in \cite{Frank10} and to learn a more general model to predict human activities in real time with a good accuracy presenting more complete results.
 
-Given their 2D nature, \glspl{cnn} are usually applied to imaging field, such as the prediction of diseases classifying x-rays images or the recognition of object, people and animals.
+Given their 2D nature, \glspl{cnn} are usually applied to imaging field, such as the prediction of diseases classifying x-rays images or the recognition of objects, people and animals.
 This work applies \glspl{cnn} to 1D signals, proving that these kind of Neural Networks are not limited to 2D signals but they can have a wide range of applications.
 Moreover, since this approach does not require an ad-hoc dataset or a particular sensor to work, it can be applied (with some little changes) to any dataset with the same purpose.
 
 Summing up what has been done in this work, the main contributions are reported in the following:
 \begin{itemize}
-\item a more general model \gls{cnn}-based is used, to make this work reusable allowing other researchers to improve the architecture here implemented;
+\item a more general model \gls{cnn}-based is used to make this work reusable allowing other researchers to improve the architecture here implemented;
 \item \gls{cnn} is used in a non-typical 1D scenario, this proves the flexibility of this tool and the adaptability to a very wide range of applications;
-\item more complete results regarding the accuracy reached in the test phase are presented, showing the behaviour of the model in situations where few data are available and these have an high variance.
+\item more complete results regarding the accuracy reached in the test phase are presented, showing the behaviour of the model in situations where few data are available and they have an high variance.
 \end{itemize}
 
 The paper is structured as follows. In section \ref{sec:related_work} the state-of-art literature is presented, in section \ref{sec:processing_architecture} are reported, at large, the main steps made by the implemented \gls{ars} to predict the activities.
 In section \ref{sec:model} the signals collected in the dataset are described and the pre-processing algorithm to make them suitable for the learning framework is explained in detail.
-The learning framework is presented in \ref{sec:cnn_architecture} and the final results are commented in \ref{sec:results}.
-Finally in \ref{sec:conclusions} are reported the difficulty faced during the development of the system and conclusions are drawn.
+The learning framework is presented in \ref{sec:cnn_architecture} and the final results are commented in \ref{sec:results}. 
+In section \ref{sec:summary} a brief report of the project is presented and the difficulties faced during the development of the system are reported. Finally in \ref{sec:conclusions} conclusions are drawn.

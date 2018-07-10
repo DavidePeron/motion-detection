@@ -2,8 +2,8 @@
 
 \section{Processing Pipeline}
 \label{sec:processing_architecture}
-The work can be divided in 3 parts: the dataset creation, the neural network creation and the real time prediction.
-In order to build an \gls{ars}, a proper dataset was firstly created. All the signals have been divided in several overlapping windows of the same dimension, each window corresponds to a specific activity. The set of windows and the correspondent activity labels created are then divided in training set and test set to learn and assess the prediction model.
+The work can be divided in 3 parts: the dataset creation, the \gls{nn} creation and the real time prediction.
+In order to build an \gls{ars}, a proper dataset has been firstly created. All the signals have been divided in several overlapping windows of the same dimension, each window corresponds to a specific activity. The set of windows and the correspondent activity labels created are then divided in training set and test set to learn and assess the prediction model.
 The training set is used to fed a \gls{cnn} made by 1D convolutional layers and fully connected layers while the test set is used to assess the accuracy of the learned model and to avoid overfitting problems.
 
 When the \gls{nn} is trained and tested, a new dataset is used in order to verify the effective robustness and generalization of the model in a real time application.
@@ -20,7 +20,7 @@ The main steps of the processing pipeline are reported in \fig{fig:processing_pi
 \label{sec:model}
 
 \subsection{Measurement setup}
-The signals the authors have worked on were provided by \gls{dlr} official website \cite{DLR}. The work is based on the data collected in the datasets  \textit{ARS\_DLR\_Data\_Set\_V2.mat} and \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}.
+The signals the authors have worked on were provided by \gls{dlr} official website \cite{DLR}. The work is based on the data collected in the datasets \textit{ARS\_DLR\_Data\_Set\_V2.mat} and \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}.
 Both of them are made up of signals recovered by a \gls{mems} based \gls{imu} (an Xsens MTx-28A53G25) composed by an accelerometer, a gyroscope and a magnetometer. These measurement systems provide information about the inertial acceleration, the angular velocity and the magnetic field direction.
 Data are collected recording signals from 14 people while they perform some ordinary motion activities like \textit{standing}, \textit{sitting}, \textit{running}, \textit{jumping}, \textit{lying}. The motion sensor is positioned over the pelvic region of each subject (\fig{fig:IMU}).
 
@@ -33,7 +33,7 @@ Data are collected recording signals from 14 people while they perform some ordi
 Although the datasets are used in different ways and since they have to comply two different tasks of the \gls{ars}, their structure is exactly the same since their are collected under the same conditions.
 Both datasets are divided in activity sessions, 34 in \textit{ARS\_DLR\_Data\_Set\_V2.mat} and 3 in \textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}, each session contains the following field:
 \begin{itemize}
-\item a matrix of 10 columns in which the first column represents the time domain and the other ones represents the \gls{imu} records over the three sensor axis;
+\item a matrix of 10 columns in which the first column represents the time domain and the other ones represent the \gls{imu} records over the three sensor axis;
 \item a rotation matrix that has the same dimension of the first field and allows to represent the measurement values in the global frame;
 \item a vector that contains the activity labels performed during the session (see \tab{tab:label});
 \item a vector that indicates when each activity starts and ends.
@@ -67,7 +67,7 @@ Both datasets are divided in activity sessions, 34 in \textit{ARS\_DLR\_Data\_Se
 \subsection{Signal pre-processing}
 The first pre-processing applied to the dataset consists in representing the signals according to the global frame using the rotation matrix. The dataset considered already contains pre-processed data, sampled at T = 0.01s.
 
-In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of Susanna activity sessions. These figures represent the magnitude of accelerometer, gyroscope and magnetometer over the three global axis. Magnitude is plotted instead of the measurements for each axis given the visual meaningfulness of the magnitude, although magnitude is not used in the computation. In particular in \fig{fig:acc} can be noticed the shift of the acceleration's mean around 9.8 $m/s^2$, value coherent with the gravitational constant value \textit{g}. It also emerges in each of these figures how the transitory activities from standing to sitting and vice versa can be seen due to the drastic change of the signals.
+In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of Susanna's activity sessions. These figures represent the magnitude of accelerometer, gyroscope and magnetometer over the three global axis. Magnitude is plotted instead of the measurements for each axis given its visual meaningfulness, although it's not used in the computation. In particular in \fig{fig:acc} can be noticed the shift of the acceleration's mean around 9.8 $m/s^2$, value coherent with the gravitational constant value \textit{g}. It also emerges in each of these figures how the transitory activities from standing to sitting and vice versa can be seen due to the drastic change of the signals.
 
 Another sort of pre-processing has been made in order to fix the activity indexing of some recordings. It frequently happened to find that, considering two adjacent motion activities, the end of the first activity and the beginning of the second one were not temporarily neighboring. It happened also to find two activities temporarily overlapping: the end of the previous activity was indexed after the beginning of the second one.
 The authors resolved the problem removing the non indexed data and the data whose label was uncertain so as to not train the \gls{nn} with wrongly labeled data.
@@ -98,15 +98,11 @@ Each session is finally represented as a long and straight matrix with nine colu
 \begin{LaTeXdescription}
 	\item[\textit{ARS\_DLR\_Data\_Set\_V2.mat}]
 		Since the \gls{cnn} needs a fixed input, each session matrix has been divided in patterns correspondent to a specific activity.
-		Every activity, then, has been divided in overlapping windows with stride equals to 3 and length equal to 27 samples, that is the shortest activity length in the whole dataset. The obtained dataset is made by several windows associated to a specific activity label, no transitional windows from an activity to another has been taken. The associated labels are then one hot encoded and, to ensure the independence between an input and the subsequent one in the \gls{cnn}, the dataset is finally shuffled.
+		Every activity, then, has been divided in overlapping windows with stride equals to 3 and length equal to 27 samples, that is the shortest activity length in the whole dataset. The obtained dataset is made by several windows associated to a specific activity label, no transitional windows from an activity to another has been taken. The associated labels are then one-hot-encoded and, to ensure the independence between an input and the subsequent one in the \gls{cnn}, the dataset is finally shuffled.
 
 	\item[\textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}]
 		It is composed by 3 activity sessions and it was used for real time prediction purposes. The signals are segmented in 27 length patterns with stride 5. The algorithm takes into account also transitional windows in order to simulate a realistic real time prediction trial even if they are not considered in the computation of the performance metrics.
 \end{LaTeXdescription}
-
-
-%Even if motion signals are not two dimensional signals, the peculiarity of input shape makes it suitable to be treated as a kind of image with a shape of a vector with 9 channels. Therefore according to the adopted strategy of \textit{Gadaleta et al.}, the dataset was processed in order to be fit into a \gls{cnn} \cite{Gadaleta-2018}.
-
 
 \section{CNN Architecture}
 \label{sec:cnn_architecture}
@@ -122,7 +118,7 @@ The first dataset is composed by 322502 patterns with shape (27,9) and it includ
 
 The \gls{cnn} architecture is schematically presented in \fig{fig:CNN} and in this section is explained in details using the showed labeling of the layers.
 
-Even if the \gls{cnn} works with matrices, has been decided to treat the single input pattern as a vertical 27 size vector with 9 channels. Zero Padding was firstly applied at the first and last two rows of the input in order to take in account also the borders in the convolutional layers.
+Even if the \gls{cnn} works with matrices, it has been decided to treat the single input pattern as a vertical 27 size vector with 9 channels. Zero Padding was firstly applied at the first and last two rows of the input in order to take into account also the borders in the convolutional layers.
 
 Then four 1D convolutional layers are applied: the changing dimension of a single pattern is shown in \fig{fig:CNN}, the row size is calculated as in \eq{eq:row_size} where $r_l$ stands for the row size of the output of the $l^{th}$ layer, $r_{l-1}$ is the row size of the output of the $l-1^{th}$ layer, $k$ is the kernel size and $s$ is the stride used in the $l^{th}$ layer. In \tab{tab:filtersize} the row size for each layer is reported.
 
@@ -138,7 +134,7 @@ Then four 1D convolutional layers are applied: the changing dimension of a singl
 		\renewcommand{\arraystretch}{1}% Tighter
 	\begin{tabular}{@{}lllll@{}}
 	\toprule
-	LAYER & $r_{l-1}$ & $k$ & $s$ & OUTPUT\\
+	LAYER & $r_{l-1}$ & $k$ & $s$ & $r_l$\\
 	\midrule
 	CONV1 & $31$ & $5$ & $1$ & $27$\\
 	CONV2 & $27$ & $5$ & $1$ & $23$\\
@@ -150,9 +146,9 @@ Then four 1D convolutional layers are applied: the changing dimension of a singl
 	\label{tab:filtersize}
 \end{table}
 
-After each convolutional layer a Batch Normalization and a \gls{relu} activation Function is applied.
+After each convolutional layer a Batch Normalization and a \gls{relu} activation function is applied.
 
-After this feature learning block, follows a classification part made of three fully connected layers: to allow this passage a flattening of Conv4 output filters is necessary (see Flatten layer in \fig{fig:CNN}). Then follows three fully connected layers of size respecively 256, 128 and 11 with \gls{relu} activation function except the last one where Softmax function has been used. The last one is the output, each of its 11 elements contains the prediction probability of a label. Softmax functions needs to find the label that has the higher probability. Since the activities to classify using the \gls{nn} are  more than two, the loss function used was \textit{categorical cross-entropy}.
+After this feature learning block, it follows a classification part made of three fully connected layers: to allow this step a flattening of Conv4's output is necessary (see Flatten layer in \fig{fig:CNN}). Then it follows three fully connected layers of size respecively 256, 128 and 11 with \gls{relu} activation function except the last one where Softmax function has been used. The last one is the output, each of its 11 elements contains the prediction probability of a label. Softmax function needs to find the label that has the higher probability. Since the activities to classify using the \gls{nn} are more than two, the loss function used was \textit{categorical cross-entropy}.
 
-In order to get a better generalization of the model, Dropout has been added. In particular the authors decided to adopt a Dropout of p = 0.15 after Conv1, Conv2 and Conv3, p = 0.25 before Flatten and p = 0.5 after Dense1 and Dense2. This choice was made according to the most commonly used \gls{cnn} configuration proposed by Hinton et al.(p = 0.5 on each fully connected layer) and a more singular configuration proposed by Sungheon et al.(p = 0.1-0.2 between the convolutional layers)~\cite{Hinton12}~\cite{Sungheon17}.
-The \textit{training set} was trained for 10 epochs with a batch size of 128 and the optimizer used was \textit{adam}.
+In order to get a better generalization of the model, Dropout has been added. In particular the authors decided to adopt a Dropout of $p = 0.15$ after Conv1, Conv2 and Conv3, $p = 0.25$ before Flatten and p = 0.5 after Dense1 and Dense2. This choice has been made according to the most commonly used \gls{cnn} configuration proposed by Hinton et al. ($p = 0.5$ on each fully connected layer) and a more singular configuration proposed by Sungheon et al. ($p = 0.1-0.2$ between the convolutional layers) \cite{Hinton12}\cite{Sungheon17}.
+The training set was trained for 10 epochs with a batch size of 128 and the optimizer used was \textit{adam}.

@@ -12,9 +12,9 @@ Once the model has been learned, the \gls{cnn} is used to predict activities in 
 
 The accuracy in the prediction phase is quite low, since the dataset used was too small and had a great variance within the data. Moreover in that dataset some labels were missing.
 
-As can be seen the accuracy is very good for longer or easy-to-recognize activities like \textit{Running}, \textit{Walking}, \textit{Standing} and \textit{Lying}, while is lower for shorter activities or activities that suffer of a big variance such as \textit{Falling} and \textit{Setting}.
+As can be seen the accuracy is very good for longer or easy-to-recognize activities like \textit{running}, \textit{walking}, \textit{standing} and \textit{lying}, while is lower for shorter activities or activities that suffer of a big variance such as \textit{falling} and \textit{sitting}.
 
-In ~\cite{Korbinian} precision and recall are plotted only for the main activities, they don't take into account the transition activities (\textit{Up}, \textit{Down}, \textit{Ascending}, \textit{Descending}). These gives a low accuracy since there are less sample in the dataset and since they can have an high variance.
+In \cite{Korbinian} precision and recall are plotted only for the main activities, they don't take into account the transition activities (\textit{up}, \textit{down}, \textit{ascending}, \textit{descending}). These give a low accuracy since they have less samples in the dataset and since they can have an high variance.
 
 \begin{figure}
 \includegraphics[scale=0.55]{precision.pdf}

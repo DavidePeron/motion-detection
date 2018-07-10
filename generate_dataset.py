@@ -4,6 +4,7 @@ import numpy as np
 import h5py
 import matplotlib.pyplot as plt
 import logging
+from utility import *
 
 '''
 promemoria per gli indici
@@ -20,8 +21,6 @@ a[1::-1]			# the first two items, reversed
 a[:-3:-1]			# the last two items, reversed
 a[-3::-1]			# everything except the last two items, reversed
 '''
-
-
 
 def get_realization_min_length(data):
 	array_of_lenghts = np.array([])
@@ -47,7 +46,7 @@ def get_pattern_min_length(data):
 	return min_length
 
 
-#preprocessing auxiliary function
+# Preprocessing auxiliary function
 def swap_indexes (a, b):
 	tmp = a
 	a = b
@@ -63,7 +62,7 @@ def preprocessing(sample, indexes):
 			if (indexes[i+1] > indexes[i]):
 				gap = indexes[i+1] - indexes[i] - 1
 				# Cut sample vector
-				sample = np.concatenate((sample[:indexes[i]], sample[indexes[i+1]:]), axis=0)
+				sample = np.concatenate((sample[:indexes[i]], sample[indexes[i+1]:]), axis = 0)
 				# Shift indexes vector
 				indexes[i+1:] = [x - gap for x in indexes[i+1:]]
 			else:
@@ -95,6 +94,30 @@ def convert_to_one_hot(dictionary_length, label):
 
 	return one_hot_array
 
+# Create patterns associated with label TRANSIT--> created in order to make benchmark work better
+def create_transit_pattern(sample, indexes, min_pattern_length):
+	# Create one_hot Y array corresponding with TRANSIT
+	transit_label = 11
+	one_hot_Y = convert_to_one_hot(len(activities_dict), transit_label)
+
+	transit_pattern = []
+	shift_vector = []
+
+	# Create transit patterns
+	for i in range(2,indexes.shape[0],2):
+		shift_vector = []
+		for k in range(10, min_pattern_length - 9):
+			shift_vector.append(indexes[i] - min_pattern_length + k)
+		# shift_vector = [indexes[i]-24, indexes[i]-21, indexes[i]-18, indexes[i]-15, indexes[i]-14,indexes[i]-12, indexes[i]-9, indexes[i]-7, indexes[i]-6, indexes[i]-3]
+
+		for j in range(len(shift_vector)):
+			window = sample[shift_vector[j]:shift_vector[j]+min_pattern_length, :]
+			transit_pattern.append([window, one_hot_Y])
+
+	return transit_pattern
+
+
+# NOT USED FUNCTIONS
 # In order to add white noise to the previuous dataset
 def add_gaussian_noise(pattern):
 	noise = np.random.normal(0, 0.01, np.shape(window))
@@ -108,23 +131,26 @@ def add_gaussian_noise(pattern):
 # Add noisy pattern to the original list of tuples
 def data_augmentation(tuples, list_of_labels):
 	original_tuples = tuples
-	k = 0
+
 	for j in range(len(list_of_labels)):
-		marta = 0
 
 		for i in range(np.shape(original_tuples)[0]):
 
 			if (original_tuples[i][1][list_of_labels[j]] == 1):
-				marta += 1
-				k += 1
 				noisy_pattern = add_gaussian_noise(original_tuples[i][0])
 				tuples.append([noisy_pattern, original_tuples[i][1]])
+
 	return tuples
 
 
 
+
+
+
+
+
 # Build the structures
-activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRNSACC': 9, 'TRNSDCC': 10}# 'TRANSIT': 11}
+activities_dict = {'RUNNING': 0, 'WALKING': 1, 'JUMPING': 2, 'STNDING': 3, 'SITTING': 4, 'XLYINGX': 5, 'FALLING': 6, 'TRANSUP': 7, 'TRANSDW': 8, 'TRNSACC': 9, 'TRNSDCC': 10}#, 'TRANSIT': 11}
 
 # Read the .mat file
 mat = sio.loadmat('ARS_DLR_DataSet_V2.mat')
@@ -140,54 +166,64 @@ min_length = int(window_size/0.01)
 # List of tuples, each tuple will contain X and Y of pattern i
 tuples = []
 
+
 tracker = np.zeros(len(activities_dict))
 
 # Cycle over all the people in the dataset
 for column in data:
+	#print(column)
 	# Extrapolate data of a single user
 	sample = data[column][0]
 	attitude = data[column][1]
 	sample_activities = data[column][2][0]
 	indexes = np.squeeze(data[column][3]) - 1 # Remove 1 since data are saved in matlab and indexes start from 1 D:
 
-	# Remove time from sample matrix
+	# Remove time from sample and attitude matrix
 	sample = sample[:,1:]
+	attitude = attitude[:,1:]
 
-	# Change of coordinates to be in global frame
-	sample *= attitude[:,1:]
+	# Turn data into global frame
+	sample = data_to_global_frame(sample,attitude)
 
 	# Remove unlabeled data
 	[sample, indexes] = preprocessing(sample, indexes)
 
+
 	# Transform samples to extract modules
-	modules = np.zeros((sample.shape[0], 3))
-	for i in range(0, sample.shape[0]):
-		acc_module = np.sqrt(np.sum(np.square(sample[i,0:3])))
-		w_module = np.sqrt(np.sum(np.square(sample[i,3:6])))
-		mag_module = np.sqrt(np.sum(np.square(sample[i,6:9])))
-		modules[i] = np.array([acc_module, w_module, mag_module])
+#	modules = np.zeros((sample.shape[0], 3))
+#	for i in range(0, sample.shape[0]):
+#		acc_module = np.sqrt(np.sum(np.square(sample[i,0:3])))
+#		w_module = np.sqrt(np.sum(np.square(sample[i,3:6])))
+#		mag_module = np.sqrt(np.sum(np.square(sample[i,6:9])))
+#		modules[i] = np.array([acc_module, w_module, mag_module])
+
+
+
 
 	for i in range(0, indexes.shape[0], 2):
-		whole_pattern = modules[indexes[i]:indexes[i+1], :]
+		whole_pattern = sample[indexes[i]:indexes[i+1], :]
 		label = activities_dict[sample_activities[int(i/2)][0]]
 		shift = 3
-		i = 0
-		while i + min_pattern_length < whole_pattern.shape[0]:
+
+
+		j = 0
+		while j + min_pattern_length < whole_pattern.shape[0]:
 			tracker[label] += 1
-			window = whole_pattern[i:i+min_pattern_length, :]
+			window = whole_pattern[j:j+min_pattern_length, :]
 			one_hot_Y = convert_to_one_hot(len(activities_dict), label)
 			tuples.append([window, one_hot_Y])
-			i += shift
+			j += shift
 
 		# Add the last window
 		one_hot_Y = convert_to_one_hot(len(activities_dict), label)
-		tuples.append([whole_pattern[-min_pattern_length:, :], one_hot_Y])
+		window = whole_pattern[-min_pattern_length:, :]
+		tuples.append([window, one_hot_Y])
 		tracker[label] += 1
 
-list_of_labels = []
-for i in range(tracker.size):
-	if (tracker[i] < 900):
-		list_of_labels.append(i)
+		# # Transitorial pattern added
+		# transit_pattern = create_transit_pattern(sample, indexes, min_pattern_length)
+		# for i in range(0, np.shape(transit_pattern)[0]):
+		# 	tuples.append(transit_pattern[i])
 
 # Add noisy patterns to tuples list
 #tuples = data_augmentation(tuples, list_of_labels)
@@ -195,6 +231,7 @@ for i in range(tracker.size):
 
 # Turn tuples into a numpy array
 tuples = np.array(tuples)
+
 
 # Shuffle the list of tuples
 np.random.shuffle(tuples)

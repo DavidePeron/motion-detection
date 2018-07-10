@@ -64,7 +64,7 @@ plt.axvline(x = indexes[0,indexes.shape[1]-1]*0.01 + time[0], color = 'k', lines
 
 plt.grid()
 plt.xlabel(r"Time [s]")
-plt.ylabel(r"Angular velocity magnitude [$rad/s$]")
+plt.ylabel(r"Angular velocity magnitude [$deg/s$]")
 
 plt.tight_layout()
 plt.savefig("angular_velocity_susanna.pdf")
@@ -80,7 +80,7 @@ plt.axvline(x = indexes[0,indexes.shape[1]-1]*0.01 + time[0], color = 'k', lines
 
 plt.grid()
 plt.xlabel(r"Time [$s$]")
-plt.ylabel(r"Magnetic field magnitude")#[Gauss]")
+plt.ylabel(r"Magnetic field magnitude [$mGauss$]")
 
 plt.tight_layout()
 plt.savefig("magnetic field_susanna.pdf")

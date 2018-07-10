@@ -4,14 +4,13 @@
 \label{sec:introduction}
 
 Activity recognition systems are promising for the next-generation technologies, they will be used both for entertainment scenarios and to improve some aspects of the medical and survival sector.
-Existing solutions are usually implemented extracting hand-crafted features used as input for classifiers such as \gls{svm} ~\cite{Elvira14, Hamalainen11, Khan10}.
+Existing solutions are usually implemented extracting hand-crafted features used as input for classifiers such as \gls{svm} \cite{Elvira14, Hamalainen11, Khan10}.
 This approach is consolidated and it leads to good results in terms of accuracy of the predictions, although hand-crafted features are data dependent and could not be generalized for different application domains.
 In the last few years a lot of effort has been put in implementing good \gls{ars} using non feature-dependent techniques to have a more general model and to reuse it in different scenarios.
 
-This work improves the work made in ~\cite{Frank10} using a \gls{cnn}-based technique to predict the proposed activities.
+This work improves the work made in \cite{Frank10} using a \gls{cnn}-based technique to predict the proposed activities.
 In the original work a total of 19 features were extracted from the recorded signals, making the model strongly data-dependent.
-Moreover, the authors seem superficial presenting the final results.
-The aim of this work is to elaborate the dataset used in ~\cite{Frank10} and to learn a more general model to predict human activities in real time with a good accuracy.
+The aim of this work is to elaborate the dataset used in \cite{Frank10} and to learn a more general model to predict human activities in real time with a good accuracy presenting more complete results.
 
 Given their 2D nature, \glspl{cnn} are usually applied to imaging field, such as the prediction of diseases classifying x-rays images or the recognition of object, people and animals.
 This work applies \glspl{cnn} to 1D signals, proving that these kind of Neural Networks are not limited to 2D signals but they can have a wide range of applications.
@@ -26,5 +25,5 @@ Summing up what has been done in this work, the main contributions are reported 
 
 The paper is structured as follows. In section \ref{sec:related_work} the state-of-art literature is presented, in section \ref{sec:processing_architecture} are reported, at large, the main steps made by the implemented \gls{ars} to predict the activities.
 In section \ref{sec:model} the signals collected in the dataset are described and the pre-processing algorithm to make them suitable for the learning framework is explained in detail.
-The learning framework is presented in \ref{sec:learning_framework} and the final results are commented in \ref{sec:results}.
+The learning framework is presented in \ref{sec:cnn_architecture} and the final results are commented in \ref{sec:results}.
 Finally in \ref{sec:conclusions} are reported the difficulty faced during the development of the system and conclusions are drawn.

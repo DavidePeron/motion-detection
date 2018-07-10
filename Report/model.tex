@@ -65,16 +65,14 @@ Both datasets are divided in activity sessions, 34 in \textit{ARS\_DLR\_Data\_Se
 
 
 \subsection{Signal pre-processing}
-The first pre-processing applied to the dataset consisted in representing the signals according to the global frame using the rotation matrix \MC{should I say more?}. The dataset considered already contains pre-processed data, sampled with T = 0.01 s.
+The first pre-processing applied to the dataset consists in representing the signals according to the global frame using the rotation matrix. The dataset considered already contains pre-processed data, sampled at T = 0.01s.
 
-In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of Susanna activity sessions. These figures represent the norm of accelerometer, gyroscope and magnetometer over the three global coordinates instead of three figures for each measurement system. This is only a convenient choose according to the visual meaningfulness of the norm. In particular in \fig{fig:acc} the shift of the acceleration mean around 9.8 m/s is noticeable, value coherent with the gravitational constant value \textit{g}. It also emerges in each of these figures how the transitory activities from standing to sitting and vice versa can be observable due to the drastic change of the signals.
+In \fig{fig:acc}, \fig{fig:gyr} and \fig{fig:mag} is showed one of Susanna activity sessions. These figures represent the magnitude of accelerometer, gyroscope and magnetometer over the three global axis. Magnitude is plotted instead of the measurements for each axis given the visual meaningfulness of the magnitude, although magnitude is not used in the computation. In particular in \fig{fig:acc} can be noticed the shift of the acceleration's mean around 9.8 $m/s^2$, value coherent with the gravitational constant value \textit{g}. It also emerges in each of these figures how the transitory activities from standing to sitting and vice versa can be seen due to the drastic change of the signals.
 
-Another sort of pre-processing was made in order to fix the activity indexing of some recordings. It frequently happened to find that, considering two adjacent motion activities, the end of the previous activity and the beginning of the succeeding one were not temporarily neighboring. It happened also to find two activities temporarily overlapping: the end of the previous activity was indexed after the beginning of the second one.
+Another sort of pre-processing has been made in order to fix the activity indexing of some recordings. It frequently happened to find that, considering two adjacent motion activities, the end of the first activity and the beginning of the second one were not temporarily neighboring. It happened also to find two activities temporarily overlapping: the end of the previous activity was indexed after the beginning of the second one.
 The authors resolved the problem removing the non indexed data and the data whose label was uncertain so as to not train the \gls{nn} with wrongly labeled data.
 
-Each session is finally represented as a long and straight matrix with nine columns (three for each measurement system) and a number of rows equals to the session duration. Due to the straight sampling time the number of rows stands at around $10^3$-$10^4$ order of magnitude.
-
-\MC{ADD LABELS ON SUSANNA FIGURES!!!}
+Each session is finally represented as a long and straight matrix with nine columns (three for each measurement system) and a number of rows equals to the session duration.
 
 \begin{figure}[htp]
 \includegraphics[scale=0.55]{acceleration_susanna.pdf}
@@ -99,7 +97,7 @@ Each session is finally represented as a long and straight matrix with nine colu
 
 \begin{LaTeXdescription}
 	\item[\textit{ARS\_DLR\_Data\_Set\_V2.mat}]
-		Since the \gls{cnn} needs a fixed input the authors decided to divide in patterns each session matrix and associate to them the corresponding label. The pattern length was decided equal to 27, that is the shortest activity length in the whole dataset. 
+		Since the \gls{cnn} needs a fixed input the authors decided to divide in patterns each session matrix and associate to them the corresponding label. The pattern length was decided equal to 27, that is the shortest activity length in the whole dataset.
 		Then it was taken every activity and it was divided in overlapping windows with stride equals to 3. The obtained final dataset was made by several windows associated to a specific activitylabel. The associated labels are all one hot encoded. No transitional patterns from an activity to another were taken. The last procedure attuated was a shuffle of the dataset.
 
 	\item[\textit{ARS\_DLR\_Benchmark\_Data\_Set.mat}]

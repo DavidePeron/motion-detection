@@ -6,9 +6,9 @@ This work has been useful to approach new machine learning tools both from a the
 In specific, we saw how \gls{ann} and \gls{cnn} work and how can be implemented to solve a given task, we learned to use deep learning framework like Keras and TensorFlow together with advanced version control software. Moreover we improved our knowledge about Python and how to optimize it to work with big amount of data.
 
 During the project we encountered several problems, we tried to solve them and we found a solution or a reasonable answer.
-Firstly, we noticed that the number of sample for each label is highly unbalanced, the solution we thought were to use data augmentation and to weight different each label in the \gls{cnn}. We tried to implement the first solution creating new samples adding noise to the original signals. We tried with white noise with small variance but the result was a low accuracy. Maybe the solution is to estimate a good model for the noise and adding it instead of a standard white noise.
-In the second case we tried to weight different the classes but we can't adapt our architecture to the requirements of the apposite keras' function.
-Our solution has been to use a smaller stride for these activities to have more data.
+Firstly, we noticed that the number of sample for each label is highly unbalanced, the solution we thought were to use data augmentation and to weight different each label in the \gls{cnn}. We tried to implement the first solution creating new samples adding noise to the original signals. We tried with a gaussian noise with a small variance but the result was a low accuracy. Maybe the solution is to estimate a better model for the noise and using it instead of a standard gaussian noise.
+In the second case we tried to differently weight the classes but we can't adapt our architecture to the requirements of the apposite keras' function.
+Our solution has been to use a smaller stride for these activities to have more data, but it did't lead to a significant improvement.
 
 In the learning phase the biggest problem was the time needed to train the network. We solved this problem installing CUDA drivers in Windows 10 and using the Graphic Card to learn the model.
 
